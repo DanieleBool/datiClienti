@@ -1,0 +1,9 @@
+﻿1;Daniele;Di Eleuterio;Teramo;M;23/10/1995
+2;Maria;Rossi;Milano;F;12/05/1980
+3;Giovanni;Bianchi;Roma;M;29/02/1976
+4;Luca;Verdi;Napoli;M;17/08/2001
+5;Anna;Gialli;Torino;F;03/11/1999
+6;Carla;Bruni;Bologna;F;25/12/1990
+7;Francesco;Neri;Firenze;M;09/03/1988
+8;Giulia;Grigi;Palermo;F;15/07/1977
+10;Mario;Valentini;Teramo;m;23/10/2020
