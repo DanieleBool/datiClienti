@@ -9,14 +9,14 @@ namespace datiClienti
 {
     class Cliente
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
         public string Nome { get; set; }
         public string Cognome { get; set; }
         public string Citta { get; set; }
         public string Sesso { get; set; }
         public DateTime DataDiNascita { get; set; }
 
-        public Cliente(int id, string nome, string cognome, string citta, string sesso, DateTime dataDiNascita)
+        public Cliente(string id, string nome, string cognome, string citta, string sesso, DateTime dataDiNascita)
         {
             ID = id;
             Nome = nome;
