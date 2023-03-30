@@ -34,7 +34,7 @@ class Program
                         Console.WriteLine("Clienti trovati:");
                         foreach (Cliente cliente in clientiTrovati)
                         {
-                            Console.WriteLine(cliente.ToString());
+                            Console.WriteLine(cliente.ToRead());
                         }
                     }
                     else
@@ -64,15 +64,8 @@ class Program
             while ((line = sr.ReadLine()) != null)
             {
                 string[] parti = line.Split(';');
-                clienti.Add(new Cliente
-                {
-                    ID = int.Parse(parti[0]),
-                    Nome = parti[1],
-                    Cognome = parti[2],
-                    Citta = parti[3],
-                    Sesso = parti[4],
-                    DataDiNascita = DateTime.ParseExact(parti[5], "dd/MM/yyyy", null)
-                });
+                clienti.Add(new Cliente(int.Parse(parti[0]), parti[1], parti[2], parti[3], parti[4],
+                    DateTime.ParseExact(parti[5], "dd/MM/yyyy", null)));
             }
         }
 
@@ -104,9 +97,9 @@ class Program
             CultureInfo.InvariantCulture, DateTimeStyles.None, out dataDiNascita))
 
         //DateTime dataDiNascita = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy", null);
-        { 
-        Cliente nuovoCliente = new Cliente
         {
+            Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, dataDiNascita)
+            {
             ID = id,
             Nome = nome,
             Cognome = cognome,
@@ -121,7 +114,7 @@ class Program
         // Salva il cliente nel file direttamente nella funzione AggiungiCliente
         using (StreamWriter sw = new StreamWriter(filePercorso, true, Encoding.UTF8))
         {
-            sw.WriteLine(nuovoCliente.ToString());
+            sw.WriteLine(nuovoCliente.ToWrite());
         }
 
         Console.WriteLine("Cliente aggiunto con successo.");

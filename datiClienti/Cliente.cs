@@ -7,10 +7,6 @@ using System.IO;
 
 namespace datiClienti
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-
     class Cliente
     {
         public int ID { get; set; }
@@ -20,10 +16,24 @@ namespace datiClienti
         public string Sesso { get; set; }
         public DateTime DataDiNascita { get; set; }
 
-        public override string ToString()
+        public Cliente(int id, string nome, string cognome, string citta, string sesso, DateTime dataDiNascita)
+        {
+            ID = id;
+            Nome = nome;
+            Cognome = cognome;
+            Citta = citta;
+            Sesso = sesso;
+            DataDiNascita = dataDiNascita;
+        }
+        public string ToRead()
         {
             return $"ID: {ID}\nNome: {Nome}\nCognome: {Cognome}\nCittà: {Citta}\nSesso: {Sesso}\nData di Nascita: {DataDiNascita:dd/MM/yyyy}";
             // "\n" serve per andare a capo.
+        }
+
+        public string ToWrite()
+        {
+            return $"{ID};{Nome};{Cognome};{Citta};{Sesso};{DataDiNascita:dd/MM/yyyy}";
         }
     }
 }
