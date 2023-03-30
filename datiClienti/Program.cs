@@ -44,13 +44,8 @@ class Program
                     break;
 
                 case 2:
-                    AggiungiCliente(clienti);
+                    AggiungiCliente(clienti, filePercorso);
                     break;
-
-                case 3:
-                    SalvaClienti(filePercorso, clienti);
-                    Console.WriteLine("Clienti salvati. Uscita dal programma.");
-                    return;
 
                 default:
                     Console.WriteLine("Opzione non valida. Riprova.");
@@ -84,7 +79,7 @@ class Program
         return clienti;
     }
 
-    static void AggiungiCliente(List<Cliente> clienti)
+    static void AggiungiCliente(List<Cliente> clienti, string filePercorso)
     {
         Console.Write("Inserisci l'ID del cliente: ");
         int id = int.Parse(Console.ReadLine());
@@ -102,9 +97,15 @@ class Program
         string sesso = Console.ReadLine();
 
         Console.Write("Inserisci la data di nascita del cliente (formato: dd/MM/yyyy): ");
-        DateTime dataDiNascita = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy", null);
+        string dataInserita = Console.ReadLine();
 
-        clienti.Add(new Cliente
+        DateTime dataDiNascita;
+        if (DateTime.TryParseExact(dataInserita, new[] { "ddMMyyyy", "dd/MM/yyyy" },
+            CultureInfo.InvariantCulture, DateTimeStyles.None, out dataDiNascita))
+
+        //DateTime dataDiNascita = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy", null);
+        { 
+        Cliente nuovoCliente = new Cliente
         {
             ID = id,
             Nome = nome,
@@ -112,20 +113,25 @@ class Program
             Citta = citta,
             Sesso = sesso,
             DataDiNascita = dataDiNascita
-        });
+        };
+
+        clienti.Add(nuovoCliente);
+
+
+        // Salva il cliente nel file direttamente nella funzione AggiungiCliente
+        using (StreamWriter sw = new StreamWriter(filePercorso, true, Encoding.UTF8))
+        {
+            sw.WriteLine(nuovoCliente.ToString());
+        }
 
         Console.WriteLine("Cliente aggiunto con successo.");
-    }
-    static void SalvaClienti(string filePercorso, List<Cliente> clienti)
-    {
-        using (StreamWriter sw = new StreamWriter(filePercorso, false, Encoding.UTF8))
+        }
+        else
         {
-            foreach (Cliente cliente in clienti)
-            {
-                sw.WriteLine(cliente.ToString());
-            }
+            Console.WriteLine("Formato data non valido. Riprova.");
         }
     }
+
 
     static List<Cliente> CercaCliente(List<Cliente> clienti, string parametroRicerca)
     {

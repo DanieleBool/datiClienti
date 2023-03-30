@@ -22,7 +22,8 @@ namespace datiClienti
 
         public override string ToString()
         {
-            return $"{ID};{Nome};{Cognome};{Citta};{Sesso};{DataDiNascita:dd/MM/yyyy}";
+            return $"ID: {ID}\nNome: {Nome}\nCognome: {Cognome}\nCittà: {Citta}\nSesso: {Sesso}\nData di Nascita: {DataDiNascita:dd/MM/yyyy}";
+            // "\n" serve per andare a capo.
         }
     }
 }
