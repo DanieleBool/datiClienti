@@ -4,7 +4,8 @@
 //using System.Text;
 //using System.Threading.Tasks;
 //using System.IO;
-
+        //using System.Globalization;
+        //using System.Text;
 
 //namespace datiClienti
 //{
@@ -19,81 +20,99 @@
 //            _clienti = new List<Cliente>();
 //        }
 
-//        public void CaricaClienti()
-//        {
-//            _clienti.Clear();
-//            using (StreamReader sr = new StreamReader(_filePercorso)) 
-//            {
-//                string riga;
-//                while ((riga = sr.ReadLine()) != null)
-//                {
-//                    string[] dati = riga.Split(';');
-//                    int id = int.Parse(dati[0]);
-//                    string nome = dati[1];
-//                    string cognome = dati[2];
-//                    string città = dati[3];
-//                    char sesso = char.Parse(dati[4]);
-//                    DateTime dataDiNascita = DateTime.Parse(dati[5]);
-//                    Cliente cliente = new Cliente(id, nome, cognome, città, sesso, dataDiNascita);
-//                    _clienti.Add(cliente);
-//                }
-//            }
-//        }
+//LA FUNZIONE CARICACLIENTI CARICA I DATI FAL FILE.TXT E LI MEMORIZZA NELLA NUOVA LISTA CLIENTI CHE SARA' POI UTILIZZATA PER AGGIUNGERE, CERCARE E VISUALIZZARE I CLIENTI
 
-//        public void SalvaClienti()
-//        {
-//            using (StreamWriter sw = new StreamWriter(_filePercorso))
-//            {
-//                foreach (Cliente cliente in _clienti)
-//                {
-//                    sw.WriteLine(cliente.ToFileString());
-//                }
-//            }
-//        }
+            //static List<Cliente> CaricaClienti(string filePercorso)
+            //{
+            //    List<Cliente> clienti = new List<Cliente>();
+            //    using (StreamReader sr = new StreamReader(filePercorso))
+            //    {
+            //        string line;
+            //        while ((line = sr.ReadLine()) != null)
+            //        {
+            //            string[] parti = line.Split(';');
+            //            clienti.Add(new Cliente(parti[0], parti[1], parti[2], parti[3], parti[4],
+            //                DateTime.ParseExact(parti[5], "dd/MM/yyyy", null)));
+            //        }
+            //    }
 
-//        public Cliente CercaCliente(int id)
-//        {
-//            return _clienti.Find(c => c.ID == id);
-//        }
+            //    return clienti;
+            //}
 
-//        public List<Cliente> CercaClienti(int tipoRicerca, string valoreRicerca)
-//        {
-//            List<Cliente> risultati = new List<Cliente>();
+            //static void AggiungiCliente(List<Cliente> clienti, string filePercorso)
+            //{
+            //    Console.Write("Inserisci l'ID del cliente: ");
+            //    string id = Console.ReadLine();
 
-//            switch (tipoRicerca)
-//            {
-//                case 1: // ID
-//                    int id = int.Parse(valoreRicerca);
-//                    Cliente cliente = CercaCliente(id);
-//                    if (cliente != null)
-//                    {
-//                        risultati.Add(cliente);
-//                    }
-//                    break;
-//                case 2: // Nome
-//                    risultati = _clienti.FindAll(c => c.Nome.Equals(valoreRicerca, StringComparison.OrdinalIgnoreCase));
-//                    break;
-//                case 3: // Cognome
-//                    risultati = _clienti.FindAll(c => c.Cognome.Equals(valoreRicerca, StringComparison.OrdinalIgnoreCase));
-//                    break;
-//                case 4: // Data di nascita
-//                    DateTime dataDiNascita = DateTime.Parse(valoreRicerca);
-//                    risultati = _clienti.FindAll(c => c.DataDiNascita.Date == dataDiNascita.Date);
-//                    break;
-//                case 5: // Luogo
-//                    risultati = _clienti.FindAll(c => c.Città.Equals(valoreRicerca, StringComparison.OrdinalIgnoreCase));
-//                    break;
-//                default:
-//                    Console.WriteLine("Tipo di ricerca non valido");
-//                    break;
-//            }
+            //    Console.Write("Inserisci il nome del cliente: ");
+            //    string nome = Console.ReadLine();
 
-//            return risultati;
-//        }
+            //    Console.Write("Inserisci il cognome del cliente: ");
+            //    string cognome = Console.ReadLine();
 
-//        public void AggiungiCliente(Cliente nuovoCliente)
-//        {
-//            _clienti.Add(nuovoCliente);
+            //    Console.Write("Inserisci la città del cliente: ");
+            //    string citta = Console.ReadLine();
+
+            //    Console.Write("Inserisci il sesso del cliente (M/F): ");
+            //    string sesso = Console.ReadLine();
+
+            //    Console.Write("Inserisci la data di nascita del cliente (formato: dd/MM/yyyy): ");
+            //    string dataInserita = Console.ReadLine();
+
+            //    DateTime dataDiNascita;
+            //    //GRAZIE ALL'IF SEGUENTE POSSO SCRIVERE LA DATA ANCHE IN FORMATO GGMMNNN, LASCIO COMMENTATO IL METODO COMUNE
+            //    if (DateTime.TryParseExact(dataInserita, new[] { "ddMMyyyy", "dd/MM/yyyy" },
+            //        CultureInfo.InvariantCulture, DateTimeStyles.None, out dataDiNascita))
+            //    //DateTime dataDiNascita = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy", null);
+            //    {
+            //        Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, dataDiNascita)
+            //        {
+            //            ID = id,
+            //            Nome = nome,
+            //            Cognome = cognome,
+            //            Citta = citta,
+            //            Sesso = sesso,
+            //            DataDiNascita = dataDiNascita
+            //        };
+
+            //        clienti.Add(nuovoCliente);
+
+            //        // SALVA IL CLIENTE
+            //        using (StreamWriter sw = new StreamWriter(filePercorso, true, Encoding.UTF8))
+            //        {
+            //            sw.WriteLine(nuovoCliente.ToWrite());
+            //        }
+            //        Console.WriteLine("Cliente aggiunto con successo.");
+            //    }
+            //    else
+            //    {
+            //        Console.WriteLine("Formato data non valido. Riprova.");
+            //    }
+            //}
+
+            //static List<Cliente> CercaCliente(List<Cliente> clienti, string parametroRicerca)
+            //{
+            //    List<Cliente> clientiTrovati = new List<Cliente>();
+
+            //    foreach (Cliente cliente in clienti)
+            //    {
+            //        if (cliente.ID.ToString() == parametroRicerca ||
+            //            //StringComparison.OrdinalIgnoreCase E' UTILIZZATO PER CONFRONTARE STRINGHE SENZA TENER CONTO DELLE MAIUSCIOLE E DELLE MINUSCOLE
+            //            //CON EQUALS CONTROLLO CHE I VARI PARAMENTRI SIANO UNUALI AL PARAMETRO IN INPUT
+            //            cliente.Nome.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
+            //            cliente.Cognome.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
+            //            cliente.Citta.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
+            //            cliente.Sesso.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
+            //            //
+            //            DateTime.Compare(cliente.DataDiNascita.Date, DateTime.Parse(parametroRicerca).Date) == 0)
+            //        //cliente.DataDiNascita.Date == DateTime.ParseExact(parametroRicerca, "dd/MM/yyyy", CultureInfo.InvariantCulture).Date)
+            //        {
+            //            clientiTrovati.Add(cliente);
+            //        }
+            //    }
+
+            //    return clientiTrovati;
+            //}
 //        }
 
 //    }

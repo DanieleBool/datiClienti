@@ -69,7 +69,6 @@ class Program
                     DateTime.ParseExact(parti[5], "dd/MM/yyyy", null)));
             }
         }
-
         return clienti;
     }
 
@@ -94,28 +93,28 @@ class Program
         string dataInserita = Console.ReadLine();
 
         DateTime dataDiNascita;
-            //GRAZIE ALL'IF SEGUENTE POSSO SCRIVERE LA DATA ANCHE IN FORMATO GGMMNNN, LASCIO COMMENTATO IL METODO COMUNE
+        //GRAZIE ALL'IF SEGUENTE POSSO SCRIVERE LA DATA ANCHE IN FORMATO GGMMNNN, LASCIO COMMENTATO IL METODO COMUNE
         if (DateTime.TryParseExact(dataInserita, new[] { "ddMMyyyy", "dd/MM/yyyy" },
             CultureInfo.InvariantCulture, DateTimeStyles.None, out dataDiNascita))
-            //DateTime dataDiNascita = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy", null);
+        //DateTime dataDiNascita = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy", null);
         {
             Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, dataDiNascita)
             {
-            ID = id,
-            Nome = nome,
-            Cognome = cognome,
-            Citta = citta,
-            Sesso = sesso,
-            DataDiNascita = dataDiNascita
-        };
+                ID = id,
+                Nome = nome,
+                Cognome = cognome,
+                Citta = citta,
+                Sesso = sesso,
+                DataDiNascita = dataDiNascita
+            };
 
-        clienti.Add(nuovoCliente);
+            clienti.Add(nuovoCliente);
 
-        // SALVA IL CLIENTE
-        using (StreamWriter sw = new StreamWriter(filePercorso, true, Encoding.UTF8))
-        {
-            sw.WriteLine(nuovoCliente.ToWrite());
-        }
+            // SALVA IL CLIENTE
+            using (StreamWriter sw = new StreamWriter(filePercorso, true, Encoding.UTF8))
+            {
+                sw.WriteLine(nuovoCliente.ToWrite());
+            }
             Console.WriteLine("Cliente aggiunto con successo.");
         }
         else
@@ -124,22 +123,52 @@ class Program
         }
     }
 
+    //    static List<Cliente> CercaCliente(List<Cliente> clienti, string parametroRicerca)
+    //    {
+    //        List<Cliente> clientiTrovati = new List<Cliente>();
+
+    //        foreach (Cliente cliente in clienti)
+    //        {
+    //            if (cliente.ID.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
+    //                //StringComparison.OrdinalIgnoreCase E' UTILIZZATO PER CONFRONTARE STRINGHE SENZA TENER CONTO DELLE MAIUSCIOLE E DELLE MINUSCOLE
+    //                //CON EQUALS CONTROLLO CHE I VARI PARAMENTRI SIANO UNUALI AL PARAMETRO IN INPUT
+    //                cliente.Nome.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
+    //                cliente.Cognome.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
+    //                cliente.Citta.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
+    //                cliente.Sesso.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
+    //                //
+    //                DateTime.Compare(cliente.DataDiNascita.Date, DateTime.Parse(parametroRicerca).Date) == 0)
+    //            //cliente.DataDiNascita.Date == DateTime.ParseExact(parametroRicerca, "dd/MM/yyyy", CultureInfo.InvariantCulture).Date)
+    //            {
+    //                clientiTrovati.Add(cliente);
+    //            }
+    //        }
+
+
+    //        return clientiTrovati;
+    //    }
+    //}
+
+
     static List<Cliente> CercaCliente(List<Cliente> clienti, string parametroRicerca)
     {
         List<Cliente> clientiTrovati = new List<Cliente>();
+        // Dichiarazione della variabile "dataDiNascita" che sarà utilizzata per contenere la data di nascita cercata.
+        DateTime dataDiNascita;
+        // Dichiarazione della variabile booleana "isDate" che sarà utilizzata per verificare se il parametro di ricerca può essere convertito in un oggetto DateTime.
+        bool isDate = DateTime.TryParseExact(parametroRicerca, new[] { "dd/MM/yyyy", "ddMMyyyy" },
+                CultureInfo.InvariantCulture, DateTimeStyles.None, out dataDiNascita);
 
         foreach (Cliente cliente in clienti)
         {
-            if (cliente.ID.ToString() == parametroRicerca ||
-                //StringComparison.OrdinalIgnoreCase E' UTILIZZATO PER CONFRONTARE STRINGHE SENZA TENER CONTO DELLE MAIUSCIOLE E DELLE MINUSCOLE
-                //CON EQUALS CONTROLLO CHE I VARI PARAMENTRI SIANO UNUALI AL PARAMETRO IN INPUT
+            //StringComparison.OrdinalIgnoreCase E' UTILIZZATO PER CONFRONTARE STRINGHE SENZA TENER CONTO DELLE MAIUSCIOLE E DELLE MINUSCOLE
+            //CON EQUALS CONTROLLO CHE I VARI PARAMENTRI SIANO UNUALI AL PARAMETRO IN INPUT
+            if (cliente.ID.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
                 cliente.Nome.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
                 cliente.Cognome.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
                 cliente.Citta.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
                 cliente.Sesso.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
-                //
-                DateTime.Compare(cliente.DataDiNascita.Date, DateTime.Parse(parametroRicerca).Date) == 0)
-                //cliente.DataDiNascita.Date == DateTime.ParseExact(parametroRicerca, "dd/MM/yyyy", CultureInfo.InvariantCulture).Date)
+                (isDate && DateTime.Compare(cliente.DataDiNascita.Date, dataDiNascita.Date) == 0))
             {
                 clientiTrovati.Add(cliente);
             }
