@@ -138,8 +138,8 @@ class Program
                 cliente.Citta.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
                 cliente.Sesso.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
                 //
-                cliente.DataDiNascita.Date == DateTime.ParseExact(parametroRicerca, "dd/MM/yyyy", CultureInfo.InvariantCulture).Date)
-
+                DateTime.Compare(cliente.DataDiNascita.Date, DateTime.Parse(parametroRicerca).Date) == 0)
+                //cliente.DataDiNascita.Date == DateTime.ParseExact(parametroRicerca, "dd/MM/yyyy", CultureInfo.InvariantCulture).Date)
             {
                 clientiTrovati.Add(cliente);
             }
