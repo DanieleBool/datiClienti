@@ -1,5 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using DatiClienti;
+using datiClienti;
 using System.Globalization;
 using System.Text;
 

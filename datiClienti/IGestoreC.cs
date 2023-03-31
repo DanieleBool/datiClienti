@@ -1,4 +1,4 @@
-﻿namespace DatiClienti
+﻿namespace datiClienti
 {
     public interface IGestoreC
     {
