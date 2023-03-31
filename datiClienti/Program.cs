@@ -1,5 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using datiClienti;
+using DatiClienti;
 using System.Globalization;
 using System.Text;
 
@@ -9,7 +9,7 @@ class Program
     static void Main(string[] args)
     {
         string filePercorso = "C:\\Users\\d.dieleuterio\\source\\repos\\datiClienti\\datiClienti\\clienti.txt";
-        GestoreC gestoreClienti = new GestoreC(filePercorso);
+        IGestoreC gestoreClienti = new GestoreC(filePercorso);
         gestoreClienti.Esegui();
     }
 }

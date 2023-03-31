@@ -1,8 +1,8 @@
-﻿using datiClienti;
+﻿using DatiClienti;
 using System.Globalization;
 using System.Text;
 
-public class GestoreC
+public class GestoreC : IGestoreC
 {
     // Campo privato che memorizza il percorso del file dei clienti
     private string _filePercorso;
