@@ -10,7 +10,7 @@ class Program
     {
         string filePercorso = "C:\\Users\\d.dieleuterio\\source\\repos\\datiClienti\\datiClienti\\clienti.txt";
         IGestoreC gestoreClienti = new GestoreC(filePercorso);
-        gestoreClienti.Esegui();
+        gestoreClienti.MenuC();
     }
 }
 
