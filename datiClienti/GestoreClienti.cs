@@ -1,6 +1,7 @@
 ﻿using datiClienti;
 using System.Globalization;
 using System.Text;
+using System.Collections.Generic;
 
 public class GestoreClienti : IGestoreC
 {
@@ -22,8 +23,33 @@ public class GestoreClienti : IGestoreC
         }
     }
 
-    public Cliente CercaCliente(string parametroRicerca)
+    public List<Cliente> CercaCliente(string parametroRicerca, string scelta)
     {
+        List<Cliente> clientiTrovati = new List<Cliente>();
+
+        string tipoRicerca = "";
+        switch (scelta)
+        {
+            case "1":
+                tipoRicerca = "ID";
+                break;
+            case "2":
+                tipoRicerca = "Nome";
+                break;
+            case "3":
+                tipoRicerca = "Cognome";
+                break;
+            case "4":
+                tipoRicerca = "Citta";
+                break;
+            case "5":
+                tipoRicerca = "Sesso";
+                break;
+            case "6":
+                tipoRicerca = "DataDiNascita";
+                break;
+        }
+
         // Apre il file dei clienti per la lettura
         using (StreamReader sr = new StreamReader(_filePercorso))
         {
@@ -40,19 +66,26 @@ public class GestoreClienti : IGestoreC
                 // TryParse tenta di convertire il parametro di ricerca in un oggetto DateTime se il parametro di ricerca è una data valida, isDataDiNascita sarà true e parametroDataDiNascita conterrà la data
                 bool isDataDiNascita = DateTime.TryParse(parametroRicerca, out DateTime parametroDataDiNascita);
                 // StringComparison.OrdinalIgnoreCase per un confronto case-insensitive
-                if (cliente.ID.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
-                    cliente.Nome.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
-                    cliente.Cognome.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
-                    cliente.Citta.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
-                    cliente.Sesso.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
-                    //se le due date sono uguali restituisce 0
-                    (isDataDiNascita && DateTime.Compare(cliente.DataDiNascita, parametroDataDiNascita) == 0))
+                //if (cliente.ID.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
+                //    cliente.Nome.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
+                //    cliente.Cognome.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
+                //    cliente.Citta.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
+                //    cliente.Sesso.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
+                //    //se le due date sono uguali restituisce 0
+                //    (isDataDiNascita && DateTime.Compare(cliente.DataDiNascita, parametroDataDiNascita) == 0))
+                if ((tipoRicerca == "ID" && cliente.ID.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase)) ||
+                (tipoRicerca == "Nome" && cliente.Nome.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase)) ||
+                (tipoRicerca == "Cognome" && cliente.Cognome.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase)) ||
+                (tipoRicerca == "Citta" && cliente.Citta.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase)) ||
+                (tipoRicerca == "Sesso" && cliente.Sesso.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase)) ||
+                (tipoRicerca == "DataDiNascita" && isDataDiNascita && DateTime.Compare(cliente.DataDiNascita, parametroDataDiNascita) == 0))
+
                 {
-                    return cliente;
+                    clientiTrovati.Add(cliente); // Aggiunge il cliente trovato alla lista dei clienti trovati
                 }
             }
         }
-        return null;
+        return clientiTrovati;
 
     }
 

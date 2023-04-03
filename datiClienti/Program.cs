@@ -29,20 +29,132 @@ class Program
 
             switch (opzione)
             {
+                //case 1:
+                //    Console.WriteLine("Inserisci un parametro di ricerca (ID, nome, cognome, città o data di nascita): ");
+                //    string parametroRicerca = Console.ReadLine();
+                //List<Cliente> clientiTrovati = gestore.CercaCliente(parametroRicerca);
+                //if (clientiTrovati.Count > 0)
+                //{
+                //    Console.WriteLine($"Sono stati trovati {clientiTrovati.Count} clienti con il parametro di ricerca fornito:");
+                //    foreach (Cliente cliente in clientiTrovati)
+                //    {
+                //        Console.WriteLine(cliente.ToRead());
+                //    }
+                //}
+                //else
+                //{
+                //    Console.WriteLine("Nessun cliente trovato con il parametro di ricerca fornito.");
+                //}
+                //break;
+
                 case 1:
-                    Console.WriteLine("Inserisci un parametro di ricerca (ID, nome, cognome, città o data di nascita): ");
+                    Console.WriteLine("Scegli l'informazione da cercare:");
+                    Console.WriteLine("1. ID");
+                    Console.WriteLine("2. Nome");
+                    Console.WriteLine("3. Cognome");
+                    Console.WriteLine("4. Città");
+                    Console.WriteLine("5. Sesso");
+                    Console.WriteLine("6. Data di Nascita");
+
+                    string scelta = (Console.ReadLine());
+
+                    Console.WriteLine("Scrivi l'informazione da cercare:");
                     string parametroRicerca = Console.ReadLine();
-                    Cliente clienteTrovato = gestore.CercaCliente(parametroRicerca);
-                    if (clienteTrovato != null)
+
+                    List<Cliente> clientiTrovati = gestore.CercaCliente(parametroRicerca, scelta);
+
+                    if (clientiTrovati.Count > 0)
                     {
-                        Console.WriteLine("Cliente trovato.");
-                        Console.WriteLine(clienteTrovato.ToRead());
+                        Console.WriteLine("Clienti trovati:");
+                        foreach (Cliente cliente in clientiTrovati)
+                        {
+                            Console.WriteLine(cliente.ToRead());
+                        }
                     }
                     else
                     {
-                        Console.WriteLine("Nessun cliente trovato con il parametro di ricerca fornito.");
+                        Console.WriteLine("Nessun cliente trovato.");
                     }
                     break;
+
+
+
+
+
+
+                    //bool validInput = int.TryParse(Console.ReadLine(), out int scelta);
+                    //if (!validInput || scelta < 1 || scelta > 6)
+                    //{
+                    //    Console.WriteLine("Scelta non valida. Riprova.");
+                    //    continue;
+                    //}
+
+                    //string parametroRicerca;
+                    //switch (scelta)
+                    //{
+                    //    case 1:
+                    //        Console.WriteLine("Inserisci l'ID del cliente:");
+                    //        parametroRicerca = Console.ReadLine();
+                    //        break;
+
+                    //    case 2:
+                    //        Console.WriteLine("Inserisci il nome del cliente:");
+                    //        parametroRicerca = Console.ReadLine();
+                    //        break;
+
+                    //    case 3:
+                    //        Console.WriteLine("Inserisci il cognome del cliente:");
+                    //        parametroRicerca = Console.ReadLine();
+                    //        break;
+
+                    //    case 4:
+                    //        Console.WriteLine("Inserisci la città del cliente:");
+                    //        parametroRicerca = Console.ReadLine();
+                    //        break;
+
+                    //    case 5:
+                    //        Console.WriteLine("Inserisci il sesso del cliente (M/F):");
+                    //        parametroRicerca = Console.ReadLine().ToUpper();
+                    //        if (parametroRicerca != "M" && parametroRicerca != "F")
+                    //        {
+                    //            Console.WriteLine("Sesso non valido. Inserisci 'M' o 'F'.");
+                    //            continue;
+                    //        }
+                    //        break;
+
+                    //    case 6:
+                    //        Console.WriteLine("Inserisci la data di nascita del cliente (formato: dd/MM/yyyy):");
+                    //        string dataIns = Console.ReadLine();
+
+                    //        DateTime dataDiNasc;
+                    //        if (DateTime.TryParseExact(dataIns, new[] { "ddMMyyyy", "dd/MM/yyyy" },
+                    //            CultureInfo.InvariantCulture, DateTimeStyles.None, out dataDiNasc))
+                    //        {
+                    //            parametroRicerca = dataDiNasc.ToString("dd/MM/yyyy");
+                    //        }
+                    //        else
+                    //        {
+                    //            Console.WriteLine("Formato data non valido. Riprova.");
+                    //            continue;
+                    //        }
+                    //        break;
+                    //    default:
+                    //        parametroRicerca = "";
+                    //        break;
+                    //}
+                    //scelta = tipoRicerca;
+                    //List<Cliente> clientiTrovati = gestore.CercaCliente(parametroRicerca);
+                    //if (clientiTrovati.Count > 0)
+                    //{
+                    //    Console.WriteLine($"Sono stati trovati {clientiTrovati.Count} clienti con il parametro di ricerca fornito:");
+                    //    foreach (Cliente cliente in clientiTrovati)
+                    //    {
+                    //        Console.WriteLine(cliente.ToRead());
+                    //    }
+                    //}
+                    ////Console.WriteLine(cliente.ToRead());
+                    //break;
+
 
                 case 2:
                     Console.Write("Inserisci l'ID del cliente: ");
