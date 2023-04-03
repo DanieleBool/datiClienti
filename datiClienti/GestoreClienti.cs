@@ -13,80 +13,12 @@ public class GestoreClienti : IGestoreC
         _filePercorso = filePercorso;
     }
 
-    public void AggiungiCliente(string filePercorso)
+    public void AggiungiCliente( object nuovoCliente, string filePercorso)
     {
-        Console.Write("Inserisci l'ID del cliente: ");
-        string id = Console.ReadLine();
-        //controllo NOT NULL
-        if (string.IsNullOrWhiteSpace(id))
+        // Aggiunge il nuovo cliente al file dei clienti
+        using (StreamWriter sw = new StreamWriter(_filePercorso, true, Encoding.UTF8))
         {
-            Console.WriteLine("ID cliente non valido o già esistente. Inserisci un ID valido e univoco.");
-            return;
-        }
-        //controllo unique con reader WORK IN PROGRESS
-        if (IdEsistente(id))
-        {
-            Console.WriteLine("ID cliente già esistente. Inserisci un ID univoco.");
-            return;
-        }
-
-        bool IdEsistente(string id)
-        {
-            using (StreamReader sr = new StreamReader(_filePercorso))
-            {
-                string line;
-                while ((line = sr.ReadLine()) != null)
-                {
-                    string[] parti = line.Split(';');
-                    if (parti[0].Equals(id, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-        //
-
-        Console.Write("Inserisci il nome del cliente: ");
-        string nome = Console.ReadLine();
-
-        Console.Write("Inserisci il cognome del cliente: ");
-        string cognome = Console.ReadLine();
-
-        Console.Write("Inserisci la città del cliente: ");
-        string citta = Console.ReadLine();
-
-        Console.Write("Inserisci il sesso del cliente (M/F): ");
-        string sesso = Console.ReadLine().ToUpper();
-        if (sesso != "M" && sesso != "F")
-        {
-            Console.WriteLine("Sesso non valido. Inserisci 'M' o 'F'.");
-            return;
-        }
-
-
-        Console.Write("Inserisci la data di nascita del cliente (formato: dd/MM/yyyy): ");
-        string dataInserita = Console.ReadLine();
-
-        DateTime dataDiNascita;
-        // Tenta di convertire la data inserita in un oggetto DateTime
-        if (DateTime.TryParseExact(dataInserita, new[] { "ddMMyyyy", "dd/MM/yyyy" },
-            CultureInfo.InvariantCulture, DateTimeStyles.None, out dataDiNascita))
-        {
-            // Crea un nuovo oggetto Cliente con i dettagli forniti
-            Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, dataDiNascita);
-
-            // Aggiunge il nuovo cliente al file dei clienti
-            using (StreamWriter sw = new StreamWriter(_filePercorso, true, Encoding.UTF8))
-            {
-                sw.WriteLine(nuovoCliente.ToWrite());
-            }
-            Console.WriteLine("Cliente aggiunto con successo.");
-        }
-        else
-        {
-            Console.WriteLine("Formato data non valido. Riprova.");
+            sw.WriteLine(nuovoCliente);
         }
     }
 
