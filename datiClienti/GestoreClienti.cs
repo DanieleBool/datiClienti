@@ -60,4 +60,34 @@ public class GestoreClienti : IGestoreC
         return clientiTrovati;
     }
 
+    public void ModificaCliente(string id, Cliente clienteModificato)
+    {
+        List<Cliente> clienti = new List<Cliente>();
+
+        using (StreamReader sr = new StreamReader(_filePercorso))
+        {
+            string line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                string[] parti = line.Split(';');
+                Cliente cliente = new Cliente(parti[0], parti[1], parti[2], parti[3], parti[4], DateTime.ParseExact(parti[5], "dd/MM/yyyy", null));
+
+                if (cliente.ID.Equals(id, StringComparison.OrdinalIgnoreCase))
+                {
+                    cliente = clienteModificato;
+                }
+
+                clienti.Add(cliente);
+            }
+        }
+
+        using (StreamWriter sw = new StreamWriter(_filePercorso, false, Encoding.UTF8))
+        {
+            foreach (Cliente cliente in clienti)
+            {
+                sw.WriteLine(cliente.ToWrite());
+            }
+        }
+    }
+
 }
