@@ -26,14 +26,22 @@ class Program
                 Console.WriteLine("Inserimento non valido. Inserisci un numero.");
                 continue;
             }
-            //int opzione = int.Parse(Console.ReadLine());
 
             switch (opzione)
             {
                 case 1:
                     Console.WriteLine("Inserisci un parametro di ricerca (ID, nome, cognome, città o data di nascita): ");
                     string parametroRicerca = Console.ReadLine();
-                    gestore.CercaCliente(parametroRicerca);
+                    bool clienteTrovato = gestore.CercaCliente(parametroRicerca);
+                    if (clienteTrovato)
+                    {
+                        Console.WriteLine("Cliente trovato.");
+                        Console.WriteLine(gestore.ClienteTrovato.ToRead());
+                    }
+                    else
+                    {
+                        Console.WriteLine("Nessun cliente trovato con il parametro di ricerca fornito.");
+                    }
                     break;
 
                 case 2:

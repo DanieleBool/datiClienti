@@ -6,6 +6,8 @@ public class GestoreClienti : IGestoreC
 {
     // Campo privato che memorizza il percorso del file dei clienti
     private string _filePercorso;
+    // Passa per l'interfaccia, la uso in CercaClienti per restituire l'oggetto trovato
+    public Cliente ClienteTrovato { get; set; }
 
     // Costruttore che accetta il percorso come argomento
     public GestoreClienti(string filePercorso)
@@ -22,7 +24,7 @@ public class GestoreClienti : IGestoreC
         }
     }
 
-    public void CercaCliente(string parametroRicerca)
+    public bool CercaCliente(string parametroRicerca)
     {
         bool clienteTrovato = false;
         // Apre il file dei clienti per la lettura
@@ -36,9 +38,9 @@ public class GestoreClienti : IGestoreC
                 string[] parti = line.Split(';');
                 // Crea un nuovo oggetto Cliente a partire dalle parti lette
                 Cliente cliente = new Cliente(parti[0], parti[1], parti[2], parti[3], parti[4],
-                    DateTime.ParseExact(parti[5], "dd/MM/yyyy", null));
+                DateTime.ParseExact(parti[5], "dd/MM/yyyy", null));
 
-                // Tenta di convertire il parametro di ricerca in un oggetto DateTime se il parametro di ricerca è una data valida, isDataDiNascita sarà true e parametroDataDiNascita conterrà la data
+                // TryParse tenta di convertire il parametro di ricerca in un oggetto DateTime se il parametro di ricerca è una data valida, isDataDiNascita sarà true e parametroDataDiNascita conterrà la data
                 bool isDataDiNascita = DateTime.TryParse(parametroRicerca, out DateTime parametroDataDiNascita);
                 // StringComparison.OrdinalIgnoreCase per un confronto case-insensitive
                 if (cliente.ID.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
@@ -49,16 +51,14 @@ public class GestoreClienti : IGestoreC
                     //se le due date sono uguali restituisce 0
                     (isDataDiNascita && DateTime.Compare(cliente.DataDiNascita, parametroDataDiNascita) == 0))
                 {
-                    Console.WriteLine(cliente.ToRead());
                     clienteTrovato = true;
+                    ClienteTrovato = cliente;
+                    return true;
                 }
             }
         }
+        return false;
 
-        if (!clienteTrovato)
-        {
-            Console.WriteLine("Nessun cliente trovato con il parametro di ricerca fornito.");
-        }
     }
 
 }
