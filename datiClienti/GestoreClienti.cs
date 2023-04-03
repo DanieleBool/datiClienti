@@ -13,12 +13,12 @@ public class GestoreClienti : IGestoreC
         _filePercorso = filePercorso;
     }
 
-    public void AggiungiCliente( object nuovoCliente, string filePercorso)
+    public void AggiungiCliente( Cliente nuovoCliente , string filePercorso)
     {
         // Aggiunge il nuovo cliente al file dei clienti
         using (StreamWriter sw = new StreamWriter(_filePercorso, true, Encoding.UTF8))
         {
-            sw.WriteLine(nuovoCliente);
+            sw.WriteLine(nuovoCliente.ToWrite());
         }
     }
 

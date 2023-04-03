@@ -67,7 +67,7 @@ class Program
                         }
                         return false;
                     }
-                    //
+                    ////
 
                     Console.Write("Inserisci il nome del cliente: ");
                     string nome = Console.ReadLine();

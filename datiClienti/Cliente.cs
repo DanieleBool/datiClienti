@@ -7,7 +7,7 @@ using System.Globalization;
 
 namespace datiClienti
 {
-    class Cliente
+    public class Cliente
     {
         public string ID { get; set; }
         public string Nome { get; set; }
@@ -25,13 +25,13 @@ namespace datiClienti
             Sesso = sesso;
             DataDiNascita = dataDiNascita;
         }
-        public string ToRead()
+        public object ToRead()
         {
             return $"ID: {ID}\nNome: {Nome}\nCognome: {Cognome}\nCittà: {Citta}\nSesso: {Sesso}\nData di Nascita: {DataDiNascita:dd/MM/yyyy}";
             // "\n" serve per andare a capo.
         }
 
-        public string ToWrite()
+        public object ToWrite()
         {
             return $"{ID};{Nome};{Cognome};{Citta};{Sesso};{DataDiNascita:dd/MM/yyyy}";
         }
