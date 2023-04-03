@@ -33,7 +33,7 @@ class Program
                 case 1:
                     Console.WriteLine("Inserisci un parametro di ricerca (ID, nome, cognome, città o data di nascita): ");
                     string parametroRicerca = Console.ReadLine();
-                    gestore.CercaCliente(filePercorso, parametroRicerca);
+                    gestore.CercaCliente(parametroRicerca);
                     break;
 
                 case 2:
@@ -49,7 +49,7 @@ class Program
                     if (IdEsistente(id))
                     {
                         Console.WriteLine("ID cliente già esistente. Inserisci un ID univoco.");
-                        return;
+                        break;
                     }
                     bool IdEsistente(string id)
                     {
@@ -97,7 +97,7 @@ class Program
                         // Crea un nuovo oggetto Cliente con i dettagli forniti
                         Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, dataDiNascita);
                         //FUNZIONE
-                        gestore.AggiungiCliente(nuovoCliente, filePercorso);
+                        gestore.AggiungiCliente(nuovoCliente);
                         Console.WriteLine("Cliente aggiunto con successo.");
                     }
                     else

@@ -13,7 +13,7 @@ public class GestoreClienti : IGestoreC
         _filePercorso = filePercorso;
     }
 
-    public void AggiungiCliente( Cliente nuovoCliente , string filePercorso)
+    public void AggiungiCliente( Cliente nuovoCliente)
     {
         // Aggiunge il nuovo cliente al file dei clienti
         using (StreamWriter sw = new StreamWriter(_filePercorso, true, Encoding.UTF8))
@@ -22,7 +22,7 @@ public class GestoreClienti : IGestoreC
         }
     }
 
-    public void CercaCliente(string filePercorso, string parametroRicerca)
+    public void CercaCliente(string parametroRicerca)
     {
         bool clienteTrovato = false;
         // Apre il file dei clienti per la lettura

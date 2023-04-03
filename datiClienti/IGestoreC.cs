@@ -2,7 +2,7 @@
 {
     public interface IGestoreC
     {
-        void AggiungiCliente( Cliente nuovoCliente, string filePercorso);
-        void CercaCliente(string filePercorso, string parametroRicerca);
+        void AggiungiCliente( Cliente nuovoCliente);
+        void CercaCliente(string parametroRicerca);
     }
 }
