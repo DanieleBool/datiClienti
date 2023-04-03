@@ -38,23 +38,52 @@ class Program
                     Console.WriteLine("5. Sesso");
                     Console.WriteLine("6. Data di Nascita");
 
+                    // Legge la scelta dell'utente dall'input della console (scelta che poi passerò al metodo)
                     string scelta = (Console.ReadLine());
 
+                    //imposta il tipo di ricerca(riscrivendo sulla variabile "scelta") in base alla scelta dell'utente
+                    switch (scelta)
+                    {
+                        case "1":
+                            scelta = "ID";
+                            break;
+                        case "2":
+                            scelta = "Nome";
+                            break;
+                        case "3":
+                            scelta = "Cognome";
+                            break;
+                        case "4":
+                            scelta = "Citta";
+                            break;
+                        case "5":
+                            scelta = "Sesso";
+                            break;
+                        case "6":
+                            scelta = "DataDiNascita";
+                            break;
+                    }
+
+                    // Legge il parametro di ricerca dall'input della console
                     Console.WriteLine("Scrivi l'informazione da cercare:");
                     string parametroRicerca = Console.ReadLine();
 
-                    List<Cliente> clientiTrovati = gestore.CercaCliente(parametroRicerca, scelta);
+                    // Chiama il metodo CercaCliente ed inserisce il risultato nella lista "clientiTrovati"
+                    List<Cliente> clientiOut = gestore.CercaCliente(parametroRicerca, scelta);
 
-                    if (clientiTrovati.Count > 0)
+                    // Controlla se la lista dei clienti trovati è vuota
+                    if (clientiOut.Count > 0)
                     {
                         Console.WriteLine("Clienti trovati:");
-                        foreach (Cliente cliente in clientiTrovati)
+                        // Stampa le informazioni di ogni cliente trovato nella lista
+                        foreach (Cliente cliente in clientiOut)
                         {
                             Console.WriteLine(cliente.ToRead());
                         }
                     }
                     else
                     {
+                        // Se la lista dei clienti trovati è vuota, stampa un messaggio per informare l'utente
                         Console.WriteLine("Nessun cliente trovato.");
                     }
                     break;
