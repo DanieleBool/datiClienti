@@ -2,9 +2,9 @@
 {
     public interface IGestoreC
     {
-        Cliente ClienteTrovato { get; set; }
+        //Cliente ClienteTrovato { get; set; }
 
         void AggiungiCliente( Cliente nuovoCliente);
-        bool CercaCliente(string parametroRicerca);
+        Cliente CercaCliente(string parametroRicerca);
     }
 }

@@ -6,8 +6,6 @@ public class GestoreClienti : IGestoreC
 {
     // Campo privato che memorizza il percorso del file dei clienti
     private string _filePercorso;
-    // Passa per l'interfaccia, la uso in CercaClienti per restituire l'oggetto trovato
-    public Cliente ClienteTrovato { get; set; }
 
     // Costruttore che accetta il percorso come argomento
     public GestoreClienti(string filePercorso)
@@ -24,9 +22,8 @@ public class GestoreClienti : IGestoreC
         }
     }
 
-    public bool CercaCliente(string parametroRicerca)
+    public Cliente CercaCliente(string parametroRicerca)
     {
-        bool clienteTrovato = false;
         // Apre il file dei clienti per la lettura
         using (StreamReader sr = new StreamReader(_filePercorso))
         {
@@ -51,13 +48,11 @@ public class GestoreClienti : IGestoreC
                     //se le due date sono uguali restituisce 0
                     (isDataDiNascita && DateTime.Compare(cliente.DataDiNascita, parametroDataDiNascita) == 0))
                 {
-                    clienteTrovato = true;
-                    ClienteTrovato = cliente;
-                    return true;
+                    return cliente;
                 }
             }
         }
-        return false;
+        return null;
 
     }
 

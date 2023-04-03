@@ -32,11 +32,11 @@ class Program
                 case 1:
                     Console.WriteLine("Inserisci un parametro di ricerca (ID, nome, cognome, città o data di nascita): ");
                     string parametroRicerca = Console.ReadLine();
-                    bool clienteTrovato = gestore.CercaCliente(parametroRicerca);
-                    if (clienteTrovato)
+                    Cliente clienteTrovato = gestore.CercaCliente(parametroRicerca);
+                    if (clienteTrovato != null)
                     {
                         Console.WriteLine("Cliente trovato.");
-                        Console.WriteLine(gestore.ClienteTrovato.ToRead());
+                        Console.WriteLine(clienteTrovato.ToRead());
                     }
                     else
                     {
