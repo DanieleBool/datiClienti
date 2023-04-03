@@ -25,8 +25,10 @@ public class GestoreClienti : IGestoreC
 
     public List<Cliente> CercaCliente(string parametroRicerca, string scelta)
     {
+        // Crea una nuova lista vuota per memorizzare i clienti trovati
         List<Cliente> clientiTrovati = new List<Cliente>();
 
+        // Imposta il tipo di ricerca in base alla scelta dell'utente
         string tipoRicerca = "";
         switch (scelta)
         {
@@ -65,14 +67,7 @@ public class GestoreClienti : IGestoreC
 
                 // TryParse tenta di convertire il parametro di ricerca in un oggetto DateTime se il parametro di ricerca è una data valida, isDataDiNascita sarà true e parametroDataDiNascita conterrà la data
                 bool isDataDiNascita = DateTime.TryParse(parametroRicerca, out DateTime parametroDataDiNascita);
-                // StringComparison.OrdinalIgnoreCase per un confronto case-insensitive
-                //if (cliente.ID.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
-                //    cliente.Nome.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
-                //    cliente.Cognome.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
-                //    cliente.Citta.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
-                //    cliente.Sesso.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase) ||
-                //    //se le due date sono uguali restituisce 0
-                //    (isDataDiNascita && DateTime.Compare(cliente.DataDiNascita, parametroDataDiNascita) == 0))
+                // Confronta il parametro di ricerca con le informazioni del cliente
                 if ((tipoRicerca == "ID" && cliente.ID.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase)) ||
                 (tipoRicerca == "Nome" && cliente.Nome.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase)) ||
                 (tipoRicerca == "Cognome" && cliente.Cognome.Equals(parametroRicerca, StringComparison.OrdinalIgnoreCase)) ||
@@ -85,8 +80,8 @@ public class GestoreClienti : IGestoreC
                 }
             }
         }
+        // Restituisce la lista dei clienti trovati
         return clientiTrovati;
-
     }
 
 }
