@@ -1,14 +1,18 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using datiClienti;
+using ClientiLibrary;
 using System;
 using System.Globalization;
 using System.Text;
+using System.IO;
+using System.Runtime.ConstrainedExecution;
 
 class Program
 {
     static void Main(string[] args)
     {
-        string filePercorso = "C:\\Users\\d.dieleuterio\\source\\repos\\datiClienti\\datiClienti\\clienti.txt";
+        //string filePercorso = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "source", "Dati", "clienti.txt");
+        string filePercorso = "C:\\Users\\d.dieleuterio\\source\\Dati\\clienti.txt";
+
 
         //creo un istanza della classe GestoreClienti con il colegamento al file .txt
         IGestoreC gestore = new GestoreClienti(filePercorso);
@@ -19,6 +23,7 @@ class Program
             Console.WriteLine("1. Cerca cliente");
             Console.WriteLine("2. Aggiungi cliente");
             Console.WriteLine("3. Modifica cliente");
+            Console.WriteLine("4. Elimina cliente");
             Console.Write("Inserisci il numero dell'opzione: ");
             //controllo input dell'opzione, legge l'input e lo converte in intero
             bool invalidInput = int.TryParse(Console.ReadLine(), out int opzione);
@@ -158,11 +163,12 @@ class Program
                         Console.WriteLine("Formato data non valido. Riprova.");
                     }
                     break;
-                    ///////////////
+                ///////////////
                 case 3:
                     Console.Write("Inserisci l'ID del cliente da modificare: ");
                     string idCliente = Console.ReadLine();
 
+                    //crca nel file tramite il metodo CercaCliente con il paramentro di scelta inpostato su "ID" e usa FirstOrDefault() per estrarre il primo oggetto Cliente trovato nel file o null se la lista è vuota.
                     Cliente clienteDaModificare = gestore.CercaCliente(idCliente, "ID").FirstOrDefault();
 
                     if (clienteDaModificare == null)
@@ -170,65 +176,135 @@ class Program
                         Console.WriteLine("Cliente non trovato.");
                         break;
                     }
-
-                    Console.WriteLine("Inserisci le nuove informazioni del cliente o premi Invio per mantenere le informazioni attuali:");
-
-                    Console.Write($"Inserisci il nuovo nome del cliente ({clienteDaModificare.Nome}): ");
-                    string nuovoNome = Console.ReadLine();
-                    if (string.IsNullOrEmpty(nuovoNome))
+                    else
                     {
-                        nuovoNome = clienteDaModificare.Nome;
-                    }
+                        Console.WriteLine("Inserisci le nuove informazioni del cliente o premi Invio per mantenere le informazioni attuali:");
 
-                    Console.Write($"Inserisci il nuovo cognome del cliente ({clienteDaModificare.Cognome}): ");
-                    string nuovoCognome = Console.ReadLine();
-                    if (string.IsNullOrEmpty(nuovoCognome))
-                    {
-                        nuovoCognome = clienteDaModificare.Cognome;
-                    }
-
-                    Console.Write($"Inserisci la nuova città del cliente ({clienteDaModificare.Citta}): ");
-                    string nuovaCitta = Console.ReadLine();
-                    if (string.IsNullOrEmpty(nuovaCitta))
-                    {
-                        nuovaCitta = clienteDaModificare.Citta;
-                    }
-
-                    Console.Write($"Inserisci il nuovo sesso del cliente ({clienteDaModificare.Sesso}): ");
-                    string nuovoSesso = Console.ReadLine().ToUpper();
-                    if (string.IsNullOrEmpty(nuovoSesso))
-                    {
-                        nuovoSesso = clienteDaModificare.Sesso;
-                    }
-                    else if (nuovoSesso != "M" && nuovoSesso != "F")
-                    {
-                        Console.WriteLine("Sesso non valido. Inserisci 'M' o 'F'.");
-                        return;
-                    }
-
-                    Console.Write($"Inserisci la nuova data di nascita del cliente ({clienteDaModificare.DataDiNascita:dd/MM/yyyy}): ");
-                    string nuovaDataInserita = Console.ReadLine();
-
-                    DateTime nuovaDataDiNascita = clienteDaModificare.DataDiNascita;
-                    if (!string.IsNullOrEmpty(nuovaDataInserita))
-                    {
-                        if (!DateTime.TryParseExact(nuovaDataInserita, new[] { "ddMMyyyy", "dd/MM/yyyy" },
-                            CultureInfo.InvariantCulture, DateTimeStyles.None, out nuovaDataDiNascita))
+                        Console.Write($"Inserisci il nuovo nome del cliente ({clienteDaModificare.Nome}): ");
+                        string nuovoNome = Console.ReadLine();
+                        if (string.IsNullOrEmpty(nuovoNome))
                         {
-                            Console.WriteLine("Formato data non valido. Riprova.");
+                            nuovoNome = clienteDaModificare.Nome;
+                        }
+
+                        Console.Write($"Inserisci il nuovo cognome del cliente ({clienteDaModificare.Cognome}): ");
+                        string nuovoCognome = Console.ReadLine();
+                        if (string.IsNullOrEmpty(nuovoCognome))
+                        {
+                            nuovoCognome = clienteDaModificare.Cognome;
+                        }
+
+                        Console.Write($"Inserisci la nuova città del cliente ({clienteDaModificare.Citta}): ");
+                        string nuovaCitta = Console.ReadLine();
+                        if (string.IsNullOrEmpty(nuovaCitta))
+                        {
+                            nuovaCitta = clienteDaModificare.Citta;
+                        }
+
+                        Console.Write($"Inserisci il nuovo sesso del cliente ({clienteDaModificare.Sesso}): ");
+                        string nuovoSesso = Console.ReadLine().ToUpper();
+                        if (string.IsNullOrEmpty(nuovoSesso))
+                        {
+                            nuovoSesso = clienteDaModificare.Sesso;
+                        }
+                        else if (nuovoSesso != "M" && nuovoSesso != "F")
+                        {
+                            Console.WriteLine("Sesso non valido. Inserisci 'M' o 'F'.");
                             return;
                         }
+
+                        Console.Write($"Inserisci la nuova data di nascita del cliente ({clienteDaModificare.DataDiNascita:dd/MM/yyyy}): ");
+                        string nuovaDataInserita = Console.ReadLine();
+                        // trasforma la stringa in data e la aggiunge al nuovo oggetto
+                        DateTime nuovaDataDiNascita = clienteDaModificare.DataDiNascita;
+                        // se la data è vuota
+                        if (!string.IsNullOrEmpty(nuovaDataInserita))
+                        {
+                            if (!DateTime.TryParseExact(nuovaDataInserita, new[] { "ddMMyyyy", "dd/MM/yyyy" },
+                                CultureInfo.InvariantCulture, DateTimeStyles.None, out nuovaDataDiNascita))
+                            {
+                                Console.WriteLine("Formato data non valido. Riprova.");
+                                return;
+                            }
+                        }
+
+                        Cliente clienteModificato = new Cliente(idCliente, nuovoNome, nuovoCognome, nuovaCitta, nuovoSesso, nuovaDataDiNascita);
+                        gestore.ModificaCliente(idCliente, clienteModificato);
+                        Console.WriteLine("Cliente modificato con successo.");
+
+                        break;
                     }
-
-                    Cliente clienteModificato = new Cliente(idCliente, nuovoNome, nuovoCognome, nuovaCitta, nuovoSesso, nuovaDataDiNascita);
-                    gestore.ModificaCliente(idCliente, clienteModificato);
-                    Console.WriteLine("Cliente modificato con successo.");
-
-                    break;
-                    ////////////////
+                case 4:
+                    Console.WriteLine("Inserisci l'ID del cliente da eliminare");
+                    string outID = Console.ReadLine();
+                    bool eliminato = gestore.EliminaCliente(outID);
+                    if (eliminato)
+                    {
+                        Console.WriteLine("Cliente eliminato con successo.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Cliente non trovato o impossibile eliminarlo.");
+                    }
+                    break;   
                 default:
                     Console.WriteLine("Opzione non valida. Riprova.");
                     break;
+
+
+                    //case 3:
+                    //    static string RichiediInformazione(string messaggio, string valoreDefault)
+                    //    {
+                    //        Console.Write($"{messaggio} ({valoreDefault}): ");
+                    //        string valoreInserito = Console.ReadLine();
+                    //        return string.IsNullOrEmpty(valoreInserito) ? valoreDefault : valoreInserito;
+                    //    }
+
+
+                    //    Console.Write("Inserisci l'ID del cliente da modificare: ");
+                    //    string idCliente = Console.ReadLine();
+
+                    //    Cliente clienteDaModificare = gestore.CercaCliente(idCliente, "ID").FirstOrDefault();
+
+                    //    if (clienteDaModificare == null)
+                    //    {
+                    //        Console.WriteLine("Cliente non trovato.");
+                    //        break;
+                    //    }
+                    //    else
+                    //    {
+                    //        Console.WriteLine("Inserisci le nuove informazioni del cliente o premi Invio per mantenere le informazioni attuali:");
+
+                    //        string nuovoNome = RichiediInformazione("Inserisci il nuovo nome del cliente", clienteDaModificare.Nome);
+                    //        string nuovoCognome = RichiediInformazione("Inserisci il nuovo cognome del cliente", clienteDaModificare.Cognome);
+                    //        string nuovaCitta = RichiediInformazione("Inserisci la nuova città del cliente", clienteDaModificare.Citta);
+
+                    //        string nuovoSesso = RichiediInformazione("Inserisci il nuovo sesso del cliente", clienteDaModificare.Sesso).ToUpper();
+                    //        while (nuovoSesso != "M" && nuovoSesso != "F")
+                    //        {
+                    //            Console.WriteLine("Sesso non valido. Inserisci 'M' o 'F'.");
+                    //            nuovoSesso = RichiediInformazione("Inserisci il nuovo sesso del cliente", clienteDaModificare.Sesso).ToUpper();
+                    //        }
+
+                    //        string nuovaDataInserita = RichiediInformazione("Inserisci la nuova data di nascita del cliente", clienteDaModificare.DataDiNascita.ToString("dd/MM/yyyy"));
+                    //        DateTime nuovaDataDiNascita = clienteDaModificare.DataDiNascita;
+                    //        while (!string.IsNullOrEmpty(nuovaDataInserita) && !DateTime.TryParseExact(nuovaDataInserita, new[] { "ddMMyyyy", "dd/MM/yyyy" },
+                    //                    CultureInfo.InvariantCulture, DateTimeStyles.None, out nuovaDataDiNascita))
+                    //        {
+                    //            Console.WriteLine("Formato data non valido. Riprova.");
+                    //            nuovaDataInserita = RichiediInformazione("Inserisci la nuova data di nascita del cliente", clienteDaModificare.DataDiNascita.ToString("dd/MM/yyyy"));
+                    //        }
+
+                    //        Cliente clienteModificato = new Cliente(idCliente, nuovoNome, nuovoCognome, nuovaCitta, nuovoSesso, nuovaDataDiNascita);
+                    //        gestore.ModificaCliente(idCliente, clienteModificato);
+                    //        Console.WriteLine("Cliente modificato con successo.");
+
+                    //        break;
+                    //    }
+                    //default:
+                    //    Console.WriteLine("Opzione non valida. Riprova.");
+                    //    break;
+
             }
         }
     }
