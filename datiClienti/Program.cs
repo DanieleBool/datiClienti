@@ -1,21 +1,37 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using ClientiLibrary;
+using AssemblyGestore;
 using System;
 using System.Globalization;
-using System.Text;
 using System.IO;
-using System.Runtime.ConstrainedExecution;
+
 
 class Program
 {
     static void Main(string[] args)
     {
-        //string filePercorso = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "source", "Dati", "clienti.txt");
-        string filePercorso = "C:\\Users\\d.dieleuterio\\source\\Dati\\clienti.txt";
+        MySql.Data.MySqlClient.MySqlConnection conn;
+        string connectionDB;
+
+        connectionDB = "server=127.0.0.1;uid=root;" +
+            "pwd=Kondor99$;port=3306;database=clienti_db";
+
+        try
+        {
+            conn = new MySql.Data.MySqlClient.MySqlConnection();
+            conn.ConnectionString = connectionDB;
+            conn.Open();
+        }
+        catch (MySql.Data.MySqlClient.MySqlException ex)
+        {
+            Console.WriteLine("Connessione non riuscita.");
+        }
 
 
-        //creo un istanza della classe GestoreClienti con il colegamento al file .txt
-        IGestoreC gestore = new GestoreClienti(filePercorso);
+
+        //string connectionDB = "Server=localhost;Database=clienti_db;port=3306;Uid=root;Pwd=Kondor99$;";
+        IGestoreC gestore = new GestoreClienti(connectionDB);
+
 
         while (true)
         {
@@ -111,7 +127,7 @@ class Program
                     }
                     bool IdEsistente(string id)
                     {
-                        using (StreamReader sr = new StreamReader(filePercorso))
+                        using (StreamReader sr = new StreamReader(connectionDB))
                         {
                             string line;
                             while ((line = sr.ReadLine()) != null)

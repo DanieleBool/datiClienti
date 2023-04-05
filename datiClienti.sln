@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "datiClienti", "datiClienti\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientiLibrary", "..\ClientiLibrary\ClientiLibrary\ClientiLibrary.csproj", "{DBF5B4C3-77F7-4603-98D4-5811E61B0133}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyGestore", "..\AssemblyGestore\AssemblyGestore.csproj", "{8B382A97-9009-40DE-9A35-26FCC5ED2920}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{DBF5B4C3-77F7-4603-98D4-5811E61B0133}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBF5B4C3-77F7-4603-98D4-5811E61B0133}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBF5B4C3-77F7-4603-98D4-5811E61B0133}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B382A97-9009-40DE-9A35-26FCC5ED2920}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B382A97-9009-40DE-9A35-26FCC5ED2920}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B382A97-9009-40DE-9A35-26FCC5ED2920}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B382A97-9009-40DE-9A35-26FCC5ED2920}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
