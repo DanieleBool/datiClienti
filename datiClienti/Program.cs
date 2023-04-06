@@ -46,7 +46,18 @@ class Program
                     Console.WriteLine("6. Data di Nascita");
 
                     // Legge la scelta dell'utente dall'input della console (scelta che poi passerò al metodo)
-                    string scelta = (Console.ReadLine());
+                    string scelta; //= (Console.ReadLine());
+                    int sceltaInt;
+                    do
+                    {
+                        scelta = Console.ReadLine();
+                        //non posso convertire la stringa scelta in un int per questo motivo devo creare la variabile sceltaInt con cui controntare
+                        int.TryParse(scelta, out sceltaInt); // Prova a convertire l'input dell'utente in un intero, memorizzandolo in sceltaInt
+                        if (sceltaInt < 1 || sceltaInt > 6)
+                        {
+                            Console.WriteLine("Inserisci un numero tra 1 e 6:");
+                        }
+                    } while (sceltaInt < 1 || sceltaInt > 6); // Ripete il ciclo finché l'input dell'utente non è un numero valido tra 1 e 6
 
                     //imposta il tipo di ricerca in base all'input dell'utente
                     switch (scelta)
