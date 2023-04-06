@@ -4,34 +4,36 @@ using AssemblyGestore;
 using System;
 using System.Globalization;
 using System.IO;
-
+using System.Configuration;
+using MySql.Data.MySqlClient;
 
 class Program
 {
     static void Main(string[] args)
     {
-        MySql.Data.MySqlClient.MySqlConnection conn;
-        string connectionDB;
 
-        connectionDB = "server=127.0.0.1;uid=root;" +
-            "pwd=Kondor99$;port=3306;database=clienti_db";
+
+        // Leggi la stringa di connessione da app.config
+        string connectionDB = ConfigurationManager.AppSettings["DefaultConnection"];
+
+        // Dichiaro la variabile conn di tipo MySqlConnection (rappresenta la connessione al db)
+        MySqlConnection conn;
 
         try
         {
-            conn = new MySql.Data.MySqlClient.MySqlConnection();
+            // Nuova istanza della classe MySqlConnection e la assegna alla variabile conn (dichiarata sopra)
+            conn = new MySqlConnection();
             conn.ConnectionString = connectionDB;
             conn.Open();
         }
-        catch (MySql.Data.MySqlClient.MySqlException ex)
+        // Ex è una variabile di tipo MySql.Data.MySqlClient.MySqlException, è un'eccezione generata dalla libreria MySQL quando si verifica un errore, può essere utilizzata per avere maggiori info sull'eccezione
+        catch (MySqlException ex)
         {
             Console.WriteLine("Connessione non riuscita.");
         }
 
-
-
-        //string connectionDB = "Server=localhost;Database=clienti_db;port=3306;Uid=root;Pwd=Kondor99$;";
+        // Crea un'istanza di GestoreClienti e passa la stringa di connessione
         IGestoreC gestore = new GestoreClienti(connectionDB);
-
 
         while (true)
         {
@@ -325,3 +327,25 @@ class Program
         }
     }
 }
+
+////dichiaro la varibile conn di tipo MySqlConnection (rappresenta la connesione al db)
+//MySql.Data.MySqlClient.MySqlConnection conn;
+//string connectionDB;
+
+//connectionDB = "server=127.0.0.1;uid=root;" + "pwd=Kondor99$;port=3306;database=clienti_db";
+
+//try
+//{
+//    //nuova istanza della classe MySqlConnection e la assegna alla variabile conn (dichiarata sopra)
+//    conn = new MySql.Data.MySqlClient.MySqlConnection();
+//    conn.ConnectionString = connectionDB;
+//    conn.Open();
+//}
+////ex è una variabile di tipo MySql.Data.MySqlClient.MySqlException, è un'eccezione generata dalla libreria MySQL quando si verifica un errore, può essere utilizzata per avere maggiori info sull'eccezione
+//catch (MySql.Data.MySqlClient.MySqlException ex)
+//{
+//    Console.WriteLine("Connessione non riuscita.");
+//}
+
+////string connectionDB = "Server=localhost;Database=clienti_db;port=3306;Uid=root;Pwd=;";
+//IGestoreC gestore = new GestoreClienti(connectionDB);
