@@ -11,26 +11,8 @@ class Program
 {
     static void Main(string[] args)
     {
-
-
         // Leggi la stringa di connessione da app.config
         string connectionDB = ConfigurationManager.AppSettings["DefaultConnection"];
-
-        // Dichiaro la variabile conn di tipo MySqlConnection (rappresenta la connessione al db)
-        MySqlConnection conn;
-
-        try
-        {
-            // Nuova istanza della classe MySqlConnection e la assegna alla variabile conn (dichiarata sopra)
-            conn = new MySqlConnection();
-            conn.ConnectionString = connectionDB;
-            conn.Open();
-        }
-        // Ex è una variabile di tipo MySql.Data.MySqlClient.MySqlException, è un'eccezione generata dalla libreria MySQL quando si verifica un errore, può essere utilizzata per avere maggiori info sull'eccezione
-        catch (MySqlException ex)
-        {
-            Console.WriteLine("Connessione non riuscita.");
-        }
 
         // Crea un'istanza di GestoreClienti e passa la stringa di connessione
         IGestoreC gestore = new GestoreClienti(connectionDB);
@@ -53,6 +35,7 @@ class Program
 
             switch (opzione)
             {
+           // CERCA CLIENTE //
                 case 1:
                     Console.WriteLine("Scegli l'informazione da cercare:");
                     Console.WriteLine("1. ID");
@@ -65,38 +48,30 @@ class Program
                     // Legge la scelta dell'utente dall'input della console (scelta che poi passerò al metodo)
                     string scelta = (Console.ReadLine());
 
-                    //imposta il tipo di ricerca(riscrivendo sulla variabile "scelta") in base alla scelta dell'utente
+                    //imposta il tipo di ricerca in base all'input dell'utente
                     switch (scelta)
                     {
-                        case "1":
-                            scelta = "ID";
+                        case "1": scelta = "ID";
                             break;
-                        case "2":
-                            scelta = "Nome";
+                        case "2": scelta = "Nome";
                             break;
-                        case "3":
-                            scelta = "Cognome";
+                        case "3": scelta = "Cognome";
                             break;
-                        case "4":
-                            scelta = "Citta";
+                        case "4": scelta = "Citta";
                             break;
-                        case "5":
-                            scelta = "Sesso";
+                        case "5": scelta = "Sesso";
                             break;
-                        case "6":
-                            scelta = "DataDiNascita";
+                        case "6": scelta = "DataDiNascita";
                             break;
                     }
 
-                    // Legge il parametro di ricerca dall'input della console
                     Console.WriteLine("Scrivi l'informazione da cercare:");
                     string parametroRicerca = Console.ReadLine();
 
-                    // Chiama il metodo CercaCliente ed inserisce il risultato nella lista "clientiTrovati"
+                    // Chiama il metodo CercaCliente ed inserisce il risultato nella lista "clientiOut"
                     List<Cliente> clientiOut = gestore.CercaCliente(parametroRicerca, scelta);
 
-                    // Controlla se la lista dei clienti trovati è vuota
-                    if (clientiOut.Count > 0)
+                    if (clientiOut.Count > 0) // Controlla se la lista dei clienti trovati non è vuota
                     {
                         Console.WriteLine("Clienti trovati:");
                         // Stampa le informazioni di ogni cliente trovato nella lista
@@ -107,43 +82,24 @@ class Program
                     }
                     else
                     {
-                        // Se la lista dei clienti trovati è vuota, stampa un messaggio per informare l'utente
-                        Console.WriteLine("Nessun cliente trovato.");
+                        Console.WriteLine("Nessun cliente trovato."); // Se la lista dei clientiOut è vuota
                     }
                     break;
 
+               // AGGIUNGI CLIENTE //
                 case 2:
                     Console.Write("Inserisci l'ID del cliente: ");
                     string id = Console.ReadLine();
-                    //controllo NOT NULL
-                    if (string.IsNullOrWhiteSpace(id))
+
+                    if (string.IsNullOrWhiteSpace(id)) //controllo NOT NULL
                     {
-                        Console.WriteLine("ID cliente non valido o già esistente. Inserisci un ID valido e univoco.");
+                        Console.WriteLine("ID cliente non valido. Inserisci un ID valido e univoco.");
                         return;
                     }
-                    //controllo unique con reader WORK IN PROGRESS
-                    if (IdEsistente(id))
+                    else //errore da database
                     {
                         Console.WriteLine("ID cliente già esistente. Inserisci un ID univoco.");
-                        break;
                     }
-                    bool IdEsistente(string id)
-                    {
-                        using (StreamReader sr = new StreamReader(connectionDB))
-                        {
-                            string line;
-                            while ((line = sr.ReadLine()) != null)
-                            {
-                                string[] parti = line.Split(';');
-                                if (parti[0].Equals(id, StringComparison.OrdinalIgnoreCase))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                        return false;
-                    }
-                    ////
 
                     Console.Write("Inserisci il nome del cliente: ");
                     string nome = Console.ReadLine();
@@ -153,7 +109,7 @@ class Program
 
                     Console.Write("Inserisci la città del cliente: ");
                     string citta = Console.ReadLine();
-
+                    //modifica sotto
                     Console.Write("Inserisci il sesso del cliente (M/F): ");
                     string sesso = Console.ReadLine().ToUpper();
                     if (sesso != "M" && sesso != "F")
@@ -181,13 +137,15 @@ class Program
                         Console.WriteLine("Formato data non valido. Riprova.");
                     }
                     break;
-                ///////////////
-                case 3:
+
+               // MODIFICA CLIENTE //
+                case 3: 
                     Console.Write("Inserisci l'ID del cliente da modificare: ");
                     string idCliente = Console.ReadLine();
 
-                    //crca nel file tramite il metodo CercaCliente con il paramentro di scelta inpostato su "ID" e usa FirstOrDefault() per estrarre il primo oggetto Cliente trovato nel file o null se la lista è vuota.
-                    Cliente clienteDaModificare = gestore.CercaCliente(idCliente, "ID").FirstOrDefault();
+                    // Tramite Find  estraggo da CercaCliente il cliente con l'ID corrispondente alla ricerca(quindi lo estraggo ma non lo leggo in console come nel case1)
+                    // crca nel file tramite il metodo CercaCliente con il paramentro di scelta inpostato su "ID" e usa FirstOrDefault() per estrarre il primo oggetto Cliente trovato nel file o null se la lista è vuota.
+                    Cliente clienteDaModificare = gestore.CercaCliente(idCliente, "ID").Find(cliente => cliente.ID == idCliente); //.FirstOrDefault();
 
                     if (clienteDaModificare == null)
                     {
@@ -219,18 +177,29 @@ class Program
                             nuovaCitta = clienteDaModificare.Citta;
                         }
 
-                        Console.Write($"Inserisci il nuovo sesso del cliente ({clienteDaModificare.Sesso}): ");
-                        string nuovoSesso = Console.ReadLine().ToUpper();
-                        if (string.IsNullOrEmpty(nuovoSesso))
+                        //SESSO
+                        string nuovoSesso = clienteDaModificare.Sesso; // nuovoSesso sarà uguale al sesso originale, in questo modo non cambia se non nell'"else if"
+                        while (true)
                         {
-                            nuovoSesso = clienteDaModificare.Sesso;
-                        }
-                        else if (nuovoSesso != "M" && nuovoSesso != "F")
-                        {
-                            Console.WriteLine("Sesso non valido. Inserisci 'M' o 'F'.");
-                            return;
+                            Console.Write($"Inserisci il nuovo sesso del cliente ({clienteDaModificare.Sesso}): ");
+                            string inputSesso = Console.ReadLine().ToUpper();
+
+                            if (string.IsNullOrEmpty(inputSesso)) // se l'input è vuoto mantiene l'info esistente
+                            {
+                                break;
+                            }
+                            else if (inputSesso == "M" || inputSesso == "F")
+                            {
+                                nuovoSesso = inputSesso; // Aggiorna il valore di nuovoSesso solo se l'input è valido
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Sesso non valido. Inserisci 'M' o 'F'.");
+                            }
                         }
 
+                        //DATA
                         Console.Write($"Inserisci la nuova data di nascita del cliente ({clienteDaModificare.DataDiNascita:dd/MM/yyyy}): ");
                         string nuovaDataInserita = Console.ReadLine();
                         // trasforma la stringa in data e la aggiunge al nuovo oggetto
@@ -252,6 +221,8 @@ class Program
 
                         break;
                     }
+
+               // ELIMINA CLIENTE //
                 case 4:
                     Console.WriteLine("Inserisci l'ID del cliente da eliminare");
                     string outID = Console.ReadLine();
@@ -330,9 +301,8 @@ class Program
 
 ////dichiaro la varibile conn di tipo MySqlConnection (rappresenta la connesione al db)
 //MySql.Data.MySqlClient.MySqlConnection conn;
-//string connectionDB;
 
-//connectionDB = "server=127.0.0.1;uid=root;" + "pwd=Kondor99$;port=3306;database=clienti_db";
+//string connectionDB = "server=127.0.0.1;uid=root;" + "pwd=Kondor99$;port=3306;database=clienti_db";
 
 //try
 //{
