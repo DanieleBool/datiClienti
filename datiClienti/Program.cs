@@ -37,129 +37,162 @@ class Program
             {
            // CERCA CLIENTE //
                 case 1:
-                    Console.WriteLine("Scegli l'informazione da cercare:");
-                    Console.WriteLine("1. ID");
-                    Console.WriteLine("2. Nome");
-                    Console.WriteLine("3. Cognome");
-                    Console.WriteLine("4. Città");
-                    Console.WriteLine("5. Sesso");
-                    Console.WriteLine("6. Data di Nascita");
-
-                    // Legge la scelta dell'utente dall'input della console (scelta che poi passerò al metodo)
-                    string scelta; //= (Console.ReadLine());
-                    int sceltaInt;
-                    do
+                    try
                     {
-                        scelta = Console.ReadLine();
-                        //non posso convertire la stringa scelta in un int per questo motivo devo creare la variabile sceltaInt con cui controntare
-                        int.TryParse(scelta, out sceltaInt); // Prova a convertire l'input dell'utente in un intero, memorizzandolo in sceltaInt
-                        if (sceltaInt < 1 || sceltaInt > 6)
+                        Console.WriteLine("Scegli l'informazione da cercare:");
+                        Console.WriteLine("1. ID");
+                        Console.WriteLine("2. Nome");
+                        Console.WriteLine("3. Cognome");
+                        Console.WriteLine("4. Città");
+                        Console.WriteLine("5. Sesso");
+                        Console.WriteLine("6. Data di Nascita");
+
+                        // Legge la scelta dell'utente dall'input della console (scelta che poi passerò al metodo)
+                        string scelta; //= (Console.ReadLine());
+                        int sceltaInt;
+                        do
                         {
-                            Console.WriteLine("Inserisci un numero tra 1 e 6:");
-                        }
-                    } while (sceltaInt < 1 || sceltaInt > 6); // Ripete il ciclo finché l'input dell'utente non è un numero valido tra 1 e 6
+                            scelta = Console.ReadLine();
+                            //non posso convertire la stringa scelta in un int per questo motivo devo creare la variabile sceltaInt con cui controntare
+                            int.TryParse(scelta, out sceltaInt); // Prova a convertire l'input dell'utente in un intero, memorizzandolo in sceltaInt
+                            if (sceltaInt < 1 || sceltaInt > 6)
+                            {
+                                Console.WriteLine("Inserisci un numero tra 1 e 6:");
+                            }
+                        } while (sceltaInt < 1 || sceltaInt > 6); // Ripete il ciclo finché l'input dell'utente non è un numero valido tra 1 e 6
 
-                    //imposta il tipo di ricerca in base all'input dell'utente
-                    switch (scelta)
-                    {
-                        case "1": scelta = "ID";
-                            break;
-                        case "2": scelta = "Nome";
-                            break;
-                        case "3": scelta = "Cognome";
-                            break;
-                        case "4": scelta = "Citta";
-                            break;
-                        case "5": scelta = "Sesso";
-                            break;
-                        case "6": scelta = "DataDiNascita";
-                            break;
-                    }
-
-                    Console.WriteLine("Scrivi l'informazione da cercare:");
-                    string parametroRicerca = Console.ReadLine();
-
-                    // Chiama il metodo CercaCliente ed inserisce il risultato nella lista "clientiOut"
-                    List<Cliente> clientiOut = gestore.CercaCliente(parametroRicerca, scelta);
-
-                    if (clientiOut.Count > 0) // Controlla se la lista dei clienti trovati non è vuota
-                    {
-                        Console.WriteLine("Clienti trovati:");
-                        // Stampa le informazioni di ogni cliente trovato nella lista
-                        foreach (Cliente cliente in clientiOut)
+                        //imposta il tipo di ricerca in base all'input dell'utente
+                        switch (scelta)
                         {
-                            Console.WriteLine(cliente.ToRead());
+                            case "1":
+                                scelta = "ID";
+                                break;
+                            case "2":
+                                scelta = "Nome";
+                                break;
+                            case "3":
+                                scelta = "Cognome";
+                                break;
+                            case "4":
+                                scelta = "Citta";
+                                break;
+                            case "5":
+                                scelta = "Sesso";
+                                break;
+                            case "6":
+                                scelta = "DataDiNascita";
+                                break;
+                        }
+
+                        Console.WriteLine("Scrivi l'informazione da cercare:");
+                        string parametroRicerca = Console.ReadLine();
+
+                        // Chiama il metodo CercaCliente ed inserisce il risultato nella lista "clientiOut"
+                        List<Cliente> clientiOut = gestore.CercaCliente(parametroRicerca, scelta);
+
+                        if (clientiOut.Count > 0) // Controlla se la lista dei clienti trovati non è vuota
+                        {
+                            Console.WriteLine("Clienti trovati:");
+                            // Stampa le informazioni di ogni cliente trovato nella lista
+                            foreach (Cliente cliente in clientiOut)
+                            {
+                                Console.WriteLine(cliente.ToRead());
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Nessun cliente trovato."); // Se la lista dei clientiOut è vuota
                         }
                     }
-                    else
+                    catch (InvalidOperationException ex)
                     {
-                        Console.WriteLine("Nessun cliente trovato."); // Se la lista dei clientiOut è vuota
+                        Console.WriteLine(ex.Message);
                     }
                     break;
 
                 // AGGIUNGI CLIENTE //
                 case 2:
-                    bool clienteAggiunto = false;
-                    while (!clienteAggiunto)
+                    // Continua ad aggiungere clienti finché l'utente non inserisce un ID valido e unico
+
+                    // Continua ad aggiungere clienti finché l'utente decide di fermarsi
+                    bool continuaAdAggiungereClienti = true;
+                    while (continuaAdAggiungereClienti)
                     {
                         Console.Write("Inserisci l'ID del cliente: ");
                         string id = Console.ReadLine();
 
-                        // Verifica se l'ID inserito esiste già nel database
-                        if (gestore.VerificaIDUnivoco(id))
+                        Console.Write("Inserisci il nome del cliente: ");
+                        string nome = Console.ReadLine();
+
+                        Console.Write("Inserisci il cognome del cliente: ");
+                        string cognome = Console.ReadLine();
+
+                        Console.Write("Inserisci la città del cliente: ");
+                        string citta = Console.ReadLine();
+
+                        // Inserisci il sesso del cliente e verifica che sia un input valido
+                        string sesso = string.Empty;
+                        while (string.IsNullOrEmpty(sesso))
                         {
-                            Console.Write("Inserisci il nome del cliente: ");
-                            string nome = Console.ReadLine();
-
-                            Console.Write("Inserisci il cognome del cliente: ");
-                            string cognome = Console.ReadLine();
-
-                            Console.Write("Inserisci la città del cliente: ");
-                            string citta = Console.ReadLine();
-
-                            string sesso = string.Empty;
-                            while (string.IsNullOrEmpty(sesso))
+                            Console.Write("Inserisci il sesso del cliente (M/F): ");
+                            string sessoInput = Console.ReadLine().ToUpper();
+                            if (sessoInput == "M" || sessoInput == "F")
                             {
-                                Console.Write("Inserisci il sesso del cliente (M/F): ");
-                                string sessoInput = Console.ReadLine().ToUpper();
-                                if (sessoInput == "M" || sessoInput == "F")
-                                {
-                                    sesso = sessoInput;
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Inserimento non valido. Inserisci 'M' o 'F'.");
-                                }
+                                sesso = sessoInput;
                             }
-
-                            while (true) { 
-                                Console.Write("Inserisci la data di nascita del cliente (formato: dd/MM/yyyy): ");
-                                string dataInserita = Console.ReadLine();
-                                DateTime dataDiNascita;
-                                // Tenta di convertire la data inserita in un oggetto DateTime
-                                if (DateTime.TryParseExact(dataInserita, new[] { "ddMMyyyy", "dd/MM/yyyy" },
-                                    CultureInfo.InvariantCulture, DateTimeStyles.None, out dataDiNascita))
-                                {
-                                    // Crea un nuovo oggetto Cliente con i dettagli forniti
-                                    Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, dataDiNascita);
-
-                                    // Aggiunge il nuovo cliente al database
-                                    gestore.AggiungiCliente(nuovoCliente);
-
-                                    Console.WriteLine("Cliente aggiunto con successo.");
-                                    clienteAggiunto = true;
-                                    break;
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Formato data non valido. Riprova.");
-                                    
-                                }
+                            else
+                            {
+                                Console.WriteLine("Inserimento non valido. Inserisci 'M' o 'F'.");
                             }
                         }
-                        else
+
+                        // Inserisci la data di nascita del cliente e verifica che sia un input valido
+                        DateTime dataDiNascita;
+                        while (true)
                         {
-                            Console.WriteLine("ID cliente già esistente. Inserisci un ID univoco.");
+                            Console.Write("Inserisci la data di nascita del cliente (formato: dd/MM/yyyy): ");
+                            string dataInserita = Console.ReadLine();
+
+                            // Tenta di convertire la data inserita in un oggetto DateTime
+                            if (DateTime.TryParseExact(dataInserita, new[] { "ddMMyyyy", "dd/MM/yyyy" },
+                                CultureInfo.InvariantCulture, DateTimeStyles.None, out dataDiNascita))
+                            {
+                                // Se la conversione ha successo, esci dal ciclo 'while'
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Formato data non valido. Riprova.");
+                            }
+                        }
+
+                        // Crea un nuovo oggetto Cliente con i dettagli forniti
+                        Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, dataDiNascita);
+
+                        // Tenta di aggiungere il nuovo cliente al database
+                        bool clienteAggiunto = false;
+                        while (!clienteAggiunto)
+                        {
+                            try
+                            {
+                                gestore.AggiungiCliente(nuovoCliente);
+                                Console.WriteLine("Cliente aggiunto con successo.");
+                                clienteAggiunto = true;
+                            }
+                            catch (InvalidOperationException ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                                Console.WriteLine("Inserisci un nuovo ID per il cliente:");
+                                nuovoCliente.ID = Console.ReadLine();
+                            }
+                        }
+                    
+                        // Chiedi all'utente se vuole continuare ad aggiungere clienti
+                        Console.WriteLine("Vuoi aggiungere un altro cliente? (S/N): ");
+                        string continua = Console.ReadLine().ToUpper();
+                        if (continua == "N")
+                        {
+                            continuaAdAggiungereClienti = false;
                         }
                     }
                     break;
@@ -240,10 +273,19 @@ class Program
                                 return;
                             }
                         }
-
+                        // Creo il nuovo oggetto
                         Cliente clienteModificato = new Cliente(idCliente, nuovoNome, nuovoCognome, nuovaCitta, nuovoSesso, nuovaDataDiNascita);
-                        gestore.ModificaCliente(idCliente, clienteModificato);
-                        Console.WriteLine("Cliente modificato con successo.");
+                        
+                        // Eccezioni
+                        try
+                        {
+                            gestore.ModificaCliente(idCliente, clienteModificato); // Si avvia il metodo
+                            Console.WriteLine("Cliente modificato con successo.");
+                        }
+                        catch (InvalidOperationException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
 
                         break;
                     }
@@ -252,16 +294,18 @@ class Program
                 case 4:
                     Console.WriteLine("Inserisci l'ID del cliente da eliminare");
                     string outID = Console.ReadLine();
-                    bool eliminato = gestore.EliminaCliente(outID);
-                    if (eliminato)
+                    try
                     {
+                        // Se il Metodo restituisce true, "eliminato" sarà true e quindi non si passerà per il catch
+                        bool eliminato = gestore.EliminaCliente(outID);
                         Console.WriteLine("Cliente eliminato con successo.");
                     }
-                    else
+                    catch (MySqlException ex)
                     {
-                        Console.WriteLine("Cliente non trovato o impossibile eliminarlo.");
+                        Console.WriteLine(ex.Message);
                     }
-                    break;   
+                    break;
+
                 default:
                     Console.WriteLine("Opzione non valida. Riprova.");
                     break;
