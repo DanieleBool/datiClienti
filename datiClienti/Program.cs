@@ -112,8 +112,6 @@ class Program
 
                 // AGGIUNGI CLIENTE //
                 case 2:
-                    // Continua ad aggiungere clienti finché l'utente non inserisce un ID valido e unico
-
                     // Continua ad aggiungere clienti finché l'utente decide di fermarsi
                     bool continuaAdAggiungereClienti = true;
                     while (continuaAdAggiungereClienti)
@@ -188,7 +186,7 @@ class Program
                         }
                     
                         // Chiedi all'utente se vuole continuare ad aggiungere clienti
-                        Console.WriteLine("Vuoi aggiungere un altro cliente? (S/N): ");
+                        Console.WriteLine("Premi \"Invio\" per aggiungere un'altro cliente o \"N\" per uscire ");
                         string continua = Console.ReadLine().ToUpper();
                         if (continua == "N")
                         {
@@ -208,8 +206,8 @@ class Program
 
                     if (clienteDaModificare == null)
                     {
-                        Console.WriteLine("Cliente non trovato.");
-                        break;
+                        //Console.WriteLine("Cliente non trovato.");
+                        //break;
                     }
                     else
                     {
@@ -275,7 +273,7 @@ class Program
                         }
                         // Creo il nuovo oggetto
                         Cliente clienteModificato = new Cliente(idCliente, nuovoNome, nuovoCognome, nuovaCitta, nuovoSesso, nuovaDataDiNascita);
-                        
+
                         // Eccezioni
                         try
                         {
@@ -286,9 +284,13 @@ class Program
                         {
                             Console.WriteLine(ex.Message);
                         }
-
-                        break;
+                        catch (MySqlException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
                     }
+                    break;
+                    
 
                // ELIMINA CLIENTE //
                 case 4:
