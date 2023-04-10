@@ -25,17 +25,13 @@ class Program
             Console.WriteLine("3. Modifica cliente");
             Console.WriteLine("4. Elimina cliente");
             Console.Write("Inserisci il numero dell'opzione: ");
-            //controllo input dell'opzione, legge l'input e lo converte in intero
-            bool invalidInput = int.TryParse(Console.ReadLine(), out int opzione);
-            if (!invalidInput)
-            {
-                Console.WriteLine("Inserimento non valido. Inserisci un numero.");
-                continue;
-            }
+            //controllo input dell'opzione, legge l'input e lo converte in intero (la conversone in intero mi serve per dei controlli sulla scelta dell'opzione)
+            int.TryParse(Console.ReadLine(), out int opzione);
 
             switch (opzione)
             {
-           // CERCA CLIENTE //
+
+                // CERCA CLIENTE //
                 case 1:
                     try
                     {
@@ -47,22 +43,18 @@ class Program
                         Console.WriteLine("5. Sesso");
                         Console.WriteLine("6. Data di Nascita");
 
-                        
                         string scelta;
                         int sceltaInt;
                         do
                         {
-                            scelta = Console.ReadLine(); // Legge la scelta dell'utente dall'input della console (scelta che poi passerò al metodo)
-
-                            // Non posso convertire la stringa scelta in un int per questo motivo devo creare la variabile sceltaInt con cui confrontare
-                            int.TryParse(scelta, out sceltaInt); 
+                            scelta = Console.ReadLine();
+                            int.TryParse(scelta, out sceltaInt);
                             if (sceltaInt < 1 || sceltaInt > 6)
                             {
                                 Console.WriteLine("Inserisci un numero tra 1 e 6:");
                             }
-                        } while (sceltaInt < 1 || sceltaInt > 6); // Ripete il ciclo finché l'input dell'utente non è un numero valido tra 1 e 6
+                        } while (sceltaInt < 1 || sceltaInt > 6);
 
-                        //imposta il tipo di ricerca in base all'input dell'utente
                         switch (scelta)
                         {
                             case "1":
@@ -88,13 +80,11 @@ class Program
                         Console.WriteLine("Scrivi l'informazione da cercare:");
                         string parametroRicerca = Console.ReadLine();
 
-                        // Chiama il metodo CercaCliente ed inserisce il risultato nella lista "clientiOut"
                         List<Cliente> clientiOut = gestore.CercaCliente(parametroRicerca, scelta);
 
-                        if (clientiOut.Count > 0) // Controlla se la lista dei clienti trovati non è vuota
+                        if (clientiOut.Count > 0)
                         {
                             Console.WriteLine("Clienti trovati:");
-                            // Stampa le informazioni di ogni cliente trovato nella lista
                             foreach (Cliente cliente in clientiOut)
                             {
                                 Console.WriteLine(cliente.ToRead());
@@ -102,99 +92,263 @@ class Program
                         }
                         else
                         {
-                            Console.WriteLine("Nessun cliente trovato."); // Se la lista dei clientiOut è vuota
+                            Console.WriteLine("Nessun cliente trovato.");
                         }
+                    }
+                    catch (MySqlException ex)
+                    {
+                        Console.WriteLine("Errore durante la ricerca del cliente: " + ex.Message);
                     }
                     catch (InvalidOperationException ex)
                     {
-                        Console.WriteLine(ex.Message);
+                        Console.WriteLine($"Errore: {ex.Message}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Errore generico: {ex.Message}");
                     }
                     break;
+
+                //// CERCA CLIENTE //
+                //     case 1:
+                //         try
+                //         {
+                //             Console.WriteLine("Scegli l'informazione da cercare:");
+                //             Console.WriteLine("1. ID");
+                //             Console.WriteLine("2. Nome");
+                //             Console.WriteLine("3. Cognome");
+                //             Console.WriteLine("4. Città");
+                //             Console.WriteLine("5. Sesso");
+                //             Console.WriteLine("6. Data di Nascita");
+
+
+                //             string scelta;
+                //             int sceltaInt;
+                //             do
+                //             {
+                //                 scelta = Console.ReadLine(); // Legge la scelta dell'utente dall'input della console (scelta che poi passerò al metodo)
+
+                //                 // Non posso convertire la stringa scelta in un int per questo motivo devo creare la variabile sceltaInt con cui confrontare
+                //                 int.TryParse(scelta, out sceltaInt); 
+                //                 if (sceltaInt < 1 || sceltaInt > 6)
+                //                 {
+                //                     Console.WriteLine("Inserisci un numero tra 1 e 6:");
+                //                 }
+                //             } while (sceltaInt < 1 || sceltaInt > 6); // Ripete il ciclo finché l'input dell'utente non è un numero valido tra 1 e 6
+
+                //             //imposta il tipo di ricerca in base all'input dell'utente
+                //             switch (scelta)
+                //             {
+                //                 case "1":
+                //                     scelta = "ID";
+                //                     break;
+                //                 case "2":
+                //                     scelta = "Nome";
+                //                     break;
+                //                 case "3":
+                //                     scelta = "Cognome";
+                //                     break;
+                //                 case "4":
+                //                     scelta = "Citta";
+                //                     break;
+                //                 case "5":
+                //                     scelta = "Sesso";
+                //                     break;
+                //                 case "6":
+                //                     scelta = "DataDiNascita";
+                //                     break;
+                //             }
+
+                //             Console.WriteLine("Scrivi l'informazione da cercare:");
+                //             string parametroRicerca = Console.ReadLine();
+
+                //             // Chiama il metodo CercaCliente ed inserisce il risultato nella lista "clientiOut"
+                //             List<Cliente> clientiOut = gestore.CercaCliente(parametroRicerca, scelta);
+
+                //             if (clientiOut.Count > 0) // Controlla se la lista dei clienti trovati non è vuota
+                //             {
+                //                 Console.WriteLine("Clienti trovati:");
+                //                 // Stampa le informazioni di ogni cliente trovato nella lista
+                //                 foreach (Cliente cliente in clientiOut)
+                //                 {
+                //                     Console.WriteLine(cliente.ToRead());
+                //                 }
+                //             }
+                //             else
+                //             {
+                //                 Console.WriteLine("Nessun cliente trovato."); // Se la lista dei clientiOut è vuota
+                //             }
+                //         }
+                //         catch (InvalidOperationException ex)
+                //         {
+                //             Console.WriteLine(ex.Message);
+                //         }
+                //         break;
 
                 // AGGIUNGI CLIENTE //
                 case 2:
-                    // Continua ad aggiungere clienti finché l'utente decide di fermarsi
                     bool continuaAdAggiungereClienti = true;
                     while (continuaAdAggiungereClienti)
                     {
-                        Console.Write("Inserisci l'ID del cliente: ");
-                        string id = Console.ReadLine();
-
-                        Console.Write("Inserisci il nome del cliente: ");
-                        string nome = Console.ReadLine();
-
-                        Console.Write("Inserisci il cognome del cliente: ");
-                        string cognome = Console.ReadLine();
-
-                        Console.Write("Inserisci la città del cliente: ");
-                        string citta = Console.ReadLine();
-
-                        // Inserisci il sesso del cliente e verifica che sia un input valido
-                        string sesso = string.Empty;
-                        while (string.IsNullOrEmpty(sesso))
+                        try
                         {
-                            Console.Write("Inserisci il sesso del cliente (M/F): ");
-                            string sessoInput = Console.ReadLine().ToUpper();
-                            if (sessoInput == "M" || sessoInput == "F")
+                            Console.Write("Inserisci l'ID del cliente: ");
+                            string id = Console.ReadLine();
+
+                            Console.Write("Inserisci il nome del cliente: ");
+                            string nome = Console.ReadLine();
+
+                            Console.Write("Inserisci il cognome del cliente: ");
+                            string cognome = Console.ReadLine();
+
+                            Console.Write("Inserisci la città del cliente: ");
+                            string citta = Console.ReadLine();
+
+                            string sesso = string.Empty;
+                            while (string.IsNullOrEmpty(sesso))
                             {
-                                sesso = sessoInput;
+                                Console.Write("Inserisci il sesso del cliente (M/F): ");
+                                string sessoInput = Console.ReadLine().ToUpper();
+                                if (sessoInput == "M" || sessoInput == "F")
+                                {
+                                    sesso = sessoInput;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Inserimento non valido. Inserisci 'M' o 'F'.");
+                                }
                             }
-                            else
+
+                            DateTime dataDiNascita;
+                            while (true)
                             {
-                                Console.WriteLine("Inserimento non valido. Inserisci 'M' o 'F'.");
+                                Console.Write("Inserisci la data di nascita del cliente (formato: dd/MM/yyyy): ");
+                                string dataInserita = Console.ReadLine();
+
+                                if (DateTime.TryParseExact(dataInserita, new[] { "ddMMyyyy", "dd/MM/yyyy", "dd-MM-yyyy" },
+                                    CultureInfo.InvariantCulture, DateTimeStyles.None, out dataDiNascita))
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Formato data non valido. Riprova.");
+                                }
+                            }
+
+                            Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, dataDiNascita);
+
+                            gestore.AggiungiCliente(nuovoCliente);
+                            Console.WriteLine("Cliente aggiunto con successo.");
+
+                            // Chiedi all'utente se vuole continuare ad aggiungere clienti
+                            Console.WriteLine("Premi \"Invio\" per aggiungere un'altro cliente o \"N\" per uscire ");
+                            string continua = Console.ReadLine().ToUpper();
+                            if (continua == "N")
+                            {
+                                continuaAdAggiungereClienti = false;
                             }
                         }
-
-                        // Inserisci la data di nascita del cliente e verifica che sia un input valido
-                        DateTime dataDiNascita;
-                        while (true)
+                        catch (InvalidOperationException ex)
                         {
-                            Console.Write("Inserisci la data di nascita del cliente (formato: dd/MM/yyyy): ");
-                            string dataInserita = Console.ReadLine();
-
-                            // Tenta di convertire la data inserita in un oggetto DateTime
-                            if (DateTime.TryParseExact(dataInserita, new[] { "ddMMyyyy", "dd/MM/yyyy", "dd-MM-yyyy" },
-                                CultureInfo.InvariantCulture, DateTimeStyles.None, out dataDiNascita))
-                            {
-                                // Se la conversione ha successo, esci dal ciclo 'while'
-                                break;
-                            }
-                            else
-                            {
-                                Console.WriteLine("Formato data non valido. Riprova.");
-                            }
+                            Console.WriteLine("Errore: " + ex.Message);
+                            Console.WriteLine("Inserimento non riuscito. Riprova.");
                         }
-
-                        // Crea un nuovo oggetto Cliente con i dettagli forniti
-                        Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, dataDiNascita);
-
-                        // Tenta di aggiungere il nuovo cliente al database
-                        bool clienteAggiunto = false;
-                        while (!clienteAggiunto)
+                        catch (FormatException)
                         {
-                            try
-                            {
-                                gestore.AggiungiCliente(nuovoCliente);
-                                Console.WriteLine("Cliente aggiunto con successo.");
-                                clienteAggiunto = true;
-                            }
-                            catch (InvalidOperationException ex)
-                            {
-                                Console.WriteLine(ex.Message);
-                                Console.WriteLine("Inserisci un nuovo ID per il cliente:");
-                                nuovoCliente.ID = Console.ReadLine();
-                            }
+                            Console.WriteLine("Errore: Formato input non valido. Riprova.");
                         }
-                    
-                        // Chiedi all'utente se vuole continuare ad aggiungere clienti
-                        Console.WriteLine("Premi \"Invio\" per aggiungere un'altro cliente o \"N\" per uscire ");
-                        string continua = Console.ReadLine().ToUpper();
-                        if (continua == "N")
+                        catch (Exception ex)
                         {
-                            continuaAdAggiungereClienti = false;
+                            Console.WriteLine("Errore generico: " + ex.Message);
                         }
                     }
                     break;
+
+                //// AGGIUNGI CLIENTE //
+                //case 2:
+                //    // Continua ad aggiungere clienti finché l'utente decide di fermarsi
+                //    bool continuaAdAggiungereClienti = true;
+                //    while (continuaAdAggiungereClienti)
+                //    {
+                //        Console.Write("Inserisci l'ID del cliente: ");
+                //        string id = Console.ReadLine();
+
+                //        Console.Write("Inserisci il nome del cliente: ");
+                //        string nome = Console.ReadLine();
+
+                //        Console.Write("Inserisci il cognome del cliente: ");
+                //        string cognome = Console.ReadLine();
+
+                //        Console.Write("Inserisci la città del cliente: ");
+                //        string citta = Console.ReadLine();
+
+                //        // Inserisci il sesso del cliente e verifica che sia un input valido
+                //        string sesso = string.Empty;
+                //        while (string.IsNullOrEmpty(sesso))
+                //        {
+                //            Console.Write("Inserisci il sesso del cliente (M/F): ");
+                //            string sessoInput = Console.ReadLine().ToUpper();
+                //            if (sessoInput == "M" || sessoInput == "F")
+                //            {
+                //                sesso = sessoInput;
+                //            }
+                //            else
+                //            {
+                //                Console.WriteLine("Inserimento non valido. Inserisci 'M' o 'F'.");
+                //            }
+                //        }
+
+                //        // Inserisci la data di nascita del cliente e verifica che sia un input valido
+                //        DateTime dataDiNascita;
+                //        while (true)
+                //        {
+                //            Console.Write("Inserisci la data di nascita del cliente (formato: dd/MM/yyyy): ");
+                //            string dataInserita = Console.ReadLine();
+
+                //            // Tenta di convertire la data inserita in un oggetto DateTime
+                //            if (DateTime.TryParseExact(dataInserita, new[] { "ddMMyyyy", "dd/MM/yyyy", "dd-MM-yyyy" },
+                //                CultureInfo.InvariantCulture, DateTimeStyles.None, out dataDiNascita))
+                //            {
+                //                // Se la conversione ha successo, esci dal ciclo 'while'
+                //                break;
+                //            }
+                //            else
+                //            {
+                //                Console.WriteLine("Formato data non valido. Riprova.");
+                //            }
+                //        }
+
+                //        // Crea un nuovo oggetto Cliente con i dettagli forniti
+                //        Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, dataDiNascita);
+
+                //        // Tenta di aggiungere il nuovo cliente al database
+                //        bool clienteAggiunto = false;
+                //        while (!clienteAggiunto)
+                //        {
+                //            try
+                //            {
+                //                gestore.AggiungiCliente(nuovoCliente);
+                //                Console.WriteLine("Cliente aggiunto con successo.");
+                //                clienteAggiunto = true;
+                //            }
+                //            catch (InvalidOperationException ex)
+                //            {
+                //                Console.WriteLine(ex.Message);
+                //                Console.WriteLine("Inserisci un nuovo ID per il cliente:");
+                //                nuovoCliente.ID = Console.ReadLine();
+                //            }
+                //        }
+
+                //        // Chiedi all'utente se vuole continuare ad aggiungere clienti
+                //        Console.WriteLine("Premi \"Invio\" per aggiungere un'altro cliente o \"N\" per uscire ");
+                //        string continua = Console.ReadLine().ToUpper();
+                //        if (continua == "N")
+                //        {
+                //            continuaAdAggiungereClienti = false;
+                //        }
+                //    }
+                //    break;
 
                 // MODIFICA CLIENTE //
                 case 3: 
