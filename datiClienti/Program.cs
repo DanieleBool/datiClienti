@@ -90,10 +90,6 @@ class Program
                                 Console.WriteLine(cliente.ToRead());
                             }
                         }
-                        else
-                        {
-                            Console.WriteLine("Nessun cliente trovato.");
-                        }
                     }
                     catch (MySqlException ex)
                     {
@@ -118,35 +114,32 @@ class Program
                         {
                             Console.Write("Inserisci l'ID del cliente: ");
                             string id = Console.ReadLine();
-                            if ((id.Length < 1)|| (id.Length > 5) || (id == null))
+                            if ((id.Length < 1) || (id.Length > 5) || (id == null))
                             {
                                 Console.WriteLine("L'ID del cliente deve essere di 5 caratteri.");
                                 break;
                             }
 
-                            Console.Write("Inserisci il nome del cliente: ");
-                            string nome = Console.ReadLine();
-                            if (string.IsNullOrEmpty(nome))
+                            string nome;
+                            do
                             {
-                                Console.WriteLine("Il nome del cliente non può essere vuoto.");
-                                break;
-                            }
+                                Console.Write("Inserisci il nome del cliente: ");
+                                nome = Console.ReadLine();
+                            } while (string.IsNullOrEmpty(nome));
 
-                            Console.Write("Inserisci il cognome del cliente: ");
-                            string cognome = Console.ReadLine();
-                            if (string.IsNullOrEmpty(cognome))
+                            string cognome;
+                            do
                             {
-                                Console.WriteLine("Il nome del cliente non può essere vuoto.");
-                                break;
-                            }
+                                Console.Write("Inserisci il cognome del cliente: ");
+                                cognome = Console.ReadLine();
+                            } while (string.IsNullOrEmpty(cognome));
 
-                            Console.Write("Inserisci la città del cliente: ");
-                            string citta = Console.ReadLine();
-                            if (string.IsNullOrEmpty(citta))
+                            string citta;
+                            do
                             {
-                                Console.WriteLine("Il nome del cliente non può essere vuoto.");
-                                break;
-                            }
+                                Console.Write("Inserisci la città del cliente: ");
+                                citta = Console.ReadLine();
+                            } while (string.IsNullOrEmpty(citta));
 
                             string sesso = string.Empty;
                             while (string.IsNullOrEmpty(sesso))
@@ -169,15 +162,6 @@ class Program
                                 Console.Write("Inserisci la data di nascita del cliente (formato: dd/MM/yyyy): ");
                                 string dataInserita = Console.ReadLine();
 
-                                //if (DateTime.TryParseExact(dataInserita, new[] { "ddMMyyyy", "dd/MM/yyyy", "dd-MM-yyyy" },
-                                //    CultureInfo.InvariantCulture, DateTimeStyles.None, out dataDiNascita))
-                                //{
-                                //    break;
-                                //}
-                                //else
-                                //{
-                                //    Console.WriteLine("Formato data non valido. Riprova.");
-                                //}
                                 string[] formatiData = { "dd/MM/yyyy", "dd-MM-yyyy", "yyyyMMdd" };
                                 //L'array formatiData contiene i formati che verranno provati uno alla volta per verificare se la stringa inserita dall'utente corrisponde a uno di essi, metterdo dopo la irgola fa parte di DateTime.TryParseExact
                                 if (!DateTime.TryParseExact(dataInserita, formatiData, CultureInfo.InvariantCulture, DateTimeStyles.None, out dataDiNascita))
@@ -188,7 +172,6 @@ class Program
                                 {
                                     break;
                                 }
-
                             }
 
                             Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, dataDiNascita);
@@ -225,40 +208,32 @@ class Program
                 case 3: 
                     Console.Write("Inserisci l'ID del cliente da modificare: ");
                     string idCliente = Console.ReadLine();
-
-                    // Tramite Find  estraggo da CercaCliente il cliente con l'ID corrispondente alla ricerca(quindi lo estraggo ma non lo leggo in console come nel case1)
-                    // crca nel file tramite il metodo CercaCliente con il paramentro di scelta inpostato su "ID" e usa FirstOrDefault() per estrarre il primo oggetto Cliente trovato nel file o null se la lista è vuota.
-                    Cliente clienteDaModificare = gestore.CercaCliente(idCliente, "ID").Find(cliente => cliente.ID == idCliente); //.FirstOrDefault();
-
-                    if (clienteDaModificare == null)
+                    try
                     {
-                        //Console.WriteLine("Cliente non trovato.");
-                        //break;
-                    }
-                    else
-                    {
+                        // Tramite Find  estraggo da CercaCliente il cliente con l'ID corrispondente alla ricerca(quindi lo estraggo ma non lo leggo in console come nel case1)
+                        // crca nel file tramite il metodo CercaCliente con il paramentro di scelta inpostato su "ID" e usa FirstOrDefault() per estrarre il primo oggetto Cliente trovato nel file o null se la lista è vuota.
+                        Cliente clienteDaModificare = gestore.CercaCliente(idCliente, "ID").Find(cliente => cliente.ID == idCliente); //.FirstOrDefault();
+
                         Console.WriteLine("Inserisci le nuove informazioni del cliente o premi Invio per mantenere le informazioni attuali:");
+
+                        //Console.Write($"Inserisci il nuovo nome del cliente ({clienteDaModificare.Nome}): ");
+                        //string nuovoNome = Console.ReadLine();
+                        //if (string.IsNullOrEmpty(nuovoNome))
+                        //{
+                        //    nuovoNome = clienteDaModificare.Nome;
+                        //}
 
                         Console.Write($"Inserisci il nuovo nome del cliente ({clienteDaModificare.Nome}): ");
                         string nuovoNome = Console.ReadLine();
-                        if (string.IsNullOrEmpty(nuovoNome))
-                        {
-                            nuovoNome = clienteDaModificare.Nome;
-                        }
+                        nuovoNome = string.IsNullOrEmpty(nuovoNome) ? clienteDaModificare.Nome : nuovoNome;
 
                         Console.Write($"Inserisci il nuovo cognome del cliente ({clienteDaModificare.Cognome}): ");
                         string nuovoCognome = Console.ReadLine();
-                        if (string.IsNullOrEmpty(nuovoCognome))
-                        {
-                            nuovoCognome = clienteDaModificare.Cognome;
-                        }
+                        nuovoCognome = string.IsNullOrEmpty(nuovoCognome) ? clienteDaModificare.Cognome : nuovoCognome;
 
                         Console.Write($"Inserisci la nuova città del cliente ({clienteDaModificare.Citta}): ");
                         string nuovaCitta = Console.ReadLine();
-                        if (string.IsNullOrEmpty(nuovaCitta))
-                        {
-                            nuovaCitta = clienteDaModificare.Citta;
-                        }
+                        nuovaCitta = string.IsNullOrEmpty(nuovaCitta) ? clienteDaModificare.Citta : nuovaCitta;
 
                         //SESSO
                         string nuovoSesso = clienteDaModificare.Sesso; // nuovoSesso sarà uguale al sesso originale, in questo modo non cambia se non nell'"else if"
@@ -293,28 +268,35 @@ class Program
                             if (!DateTime.TryParseExact(nuovaDataInserita, new[] { "ddMMyyyy", "dd/MM/yyyy" },
                                 CultureInfo.InvariantCulture, DateTimeStyles.None, out nuovaDataDiNascita))
                             {
-                                Console.WriteLine("Formato data non valido. Riprova.");
-                                return;
+                                //Console.WriteLine("Formato data non valido. Riprova.");
+                                //return;
                             }
                         }
                         // Creo il nuovo oggetto
                         Cliente clienteModificato = new Cliente(idCliente, nuovoNome, nuovoCognome, nuovaCitta, nuovoSesso, nuovaDataDiNascita);
 
                         // Eccezioni
-                        try
-                        {
-                            gestore.ModificaCliente(idCliente, clienteModificato); // Si avvia il metodo
-                            Console.WriteLine("Cliente modificato con successo.");
-                        }
-                        catch (InvalidOperationException ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                        }
-                        catch (MySqlException ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                        }
+
+                        gestore.ModificaCliente(idCliente, clienteModificato); // Si avvia il metodo
+                        Console.WriteLine("Cliente modificato con successo.");
                     }
+                    catch (InvalidOperationException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                    catch (MySqlException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                    catch (ArgumentNullException ex)
+                    {
+                        Console.WriteLine(ex.ParamName, ex.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);  
+                    }
+                    
                     break;
                     
 
