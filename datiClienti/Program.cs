@@ -259,19 +259,26 @@ class Program
 
                         //DATA
                         Console.Write($"Inserisci la nuova data di nascita del cliente ({clienteDaModificare.DataDiNascita:dd/MM/yyyy}): ");
-                        string nuovaDataInserita = Console.ReadLine();
-                        // trasforma la stringa in data e la aggiunge al nuovo oggetto
                         DateTime nuovaDataDiNascita = clienteDaModificare.DataDiNascita;
-                        // se la data è vuota
-                        if (!string.IsNullOrEmpty(nuovaDataInserita))
+
+                        do
                         {
-                            if (!DateTime.TryParseExact(nuovaDataInserita, new[] { "ddMMyyyy", "dd/MM/yyyy" },
+                            string nuovaDataInserita = Console.ReadLine();
+                            if (string.IsNullOrEmpty(nuovaDataInserita))
+                            {
+                                break;
+                            }
+
+                            if (DateTime.TryParseExact(nuovaDataInserita, new[] { "ddMMyyyy", "dd/MM/yyyy" },
                                 CultureInfo.InvariantCulture, DateTimeStyles.None, out nuovaDataDiNascita))
                             {
-                                //Console.WriteLine("Formato data non valido. Riprova.");
-                                //return;
+                                break;
                             }
-                        }
+                            Console.WriteLine("Formato data non valido. Riprova.");
+
+                        } while (true);
+
+
                         // Creo il nuovo oggetto
                         Cliente clienteModificato = new Cliente(idCliente, nuovoNome, nuovoCognome, nuovaCitta, nuovoSesso, nuovaDataDiNascita);
 
