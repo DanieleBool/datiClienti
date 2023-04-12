@@ -21,18 +21,16 @@ class Program
 
         IGestoreC gestore;
 
-        Console.WriteLine("Scegli un metodo di archiviazione: \n");
-        Console.WriteLine("1. Database");
-        Console.WriteLine("2. File di testo");
+        int sceltaArchiviazione;
 
-        int.TryParse(Console.ReadLine(), out int sceltaArchiviazione);
-        while (sceltaArchiviazione != 1 && sceltaArchiviazione != 2)
+        do
         {
-            Console.WriteLine("Inserisci un numero valido:");
+            Console.WriteLine("Scegli un metodo di archiviazione: \n");
             Console.WriteLine("1. Database");
             Console.WriteLine("2. File di testo");
             int.TryParse(Console.ReadLine(), out sceltaArchiviazione);
-        }
+            //se avessi usato || in ciclo sarebbe continuato perchè non sarebbe stata soddisfatta una delle due condizioni
+        } while (sceltaArchiviazione != 1 && sceltaArchiviazione != 2);
 
         if (sceltaArchiviazione == 1)
         {
@@ -45,7 +43,7 @@ class Program
 
         while (true)
         {
-            Console.WriteLine("Scegli un'opzione:");
+            Console.WriteLine("Scegli un'opzione:\n");
             Console.WriteLine("1. Cerca cliente");
             Console.WriteLine("2. Aggiungi cliente");
             Console.WriteLine("3. Modifica cliente");
