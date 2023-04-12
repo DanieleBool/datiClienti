@@ -22,7 +22,6 @@ class Program
         IGestoreC gestore;
 
         int sceltaArchiviazione;
-
         do
         {
             Console.WriteLine("Scegli un metodo di archiviazione: \n");
@@ -114,18 +113,6 @@ class Program
                                 Console.WriteLine(cliente.ToRead());
                             }
                         }
-                    }
-                    catch (MySqlException ex)
-                    {
-                        Console.WriteLine("Errore durante la ricerca del cliente: " + ex.Message);
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        Console.WriteLine($"Errore: {ex.Message}");
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        Console.WriteLine($"Errore: {ex.Message}");
                     }
                     catch (IOException ex)
                     {
@@ -219,19 +206,7 @@ class Program
                                 continuaAdAggiungereClienti = false;
                             }
                         }
-                        catch (InvalidOperationException ex)
-                        {
-                            Console.WriteLine("Inserimento non riuscito. Riprova." + ex.Message);
-                        }
-                        catch (FormatException)
-                        {
-                            Console.WriteLine("Errore: Formato input non valido. Riprova.");
-                        }
                         catch (IOException ex)
-                        {
-                            Console.WriteLine($"Errore: {ex.Message}");
-                        }
-                        catch (ArgumentException ex)
                         {
                             Console.WriteLine($"Errore: {ex.Message}");
                         }
@@ -326,17 +301,9 @@ class Program
                         gestore.ModificaCliente(idCliente, clienteModificato); // Si avvia il metodo
                         Console.WriteLine("Cliente modificato con successo.");
                     }
-                    catch (InvalidOperationException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
                     catch (MySqlException ex)
                     {
                         Console.WriteLine(ex.Message);
-                    }
-                    catch (ArgumentNullException ex)
-                    {
-                        Console.WriteLine(ex.ParamName, ex.Message);
                     }
                     catch (ArgumentException ex)
                     {
