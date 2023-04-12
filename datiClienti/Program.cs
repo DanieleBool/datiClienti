@@ -4,6 +4,7 @@ using AssemblyGestore;
 using System;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Configuration;
 using MySql.Data.MySqlClient;
 
@@ -11,11 +12,36 @@ class Program
 {
     static void Main(string[] args)
     {
-        // Leggi la stringa di connessione da app.config
-        string connectionDB = ConfigurationManager.AppSettings["DefaultConnection"];
+        // CONNESSIONE DB //
+        string connectionDB = ConfigurationManager.AppSettings["DatabaseConnection"]; // Leggi la stringa di connessione da app.config  
+        IGestoreC gestoreDatabase = new GestoreClienti(connectionDB); // Crea un'istanza di GestoreClienti e passa la stringa di connessione
+        // CONNESSIONE FILE //
+        string filePercorso = ConfigurationManager.AppSettings["FileConnection"];
+        IGestoreC gestoreFile = new GestoreFileClienti(filePercorso); //creo un istanza della classe GestoreFileClienti con il colegamento al file .txt
 
-        // Crea un'istanza di GestoreClienti e passa la stringa di connessione
-        IGestoreC gestore = new GestoreClienti(connectionDB);
+        IGestoreC gestore;
+
+        Console.WriteLine("Scegli un metodo di archiviazione: \n");
+        Console.WriteLine("1. Database");
+        Console.WriteLine("2. File di testo");
+
+        int.TryParse(Console.ReadLine(), out int sceltaArchiviazione);
+        while (sceltaArchiviazione != 1 && sceltaArchiviazione != 2)
+        {
+            Console.WriteLine("Inserisci un numero valido:");
+            Console.WriteLine("1. Database");
+            Console.WriteLine("2. File di testo");
+            int.TryParse(Console.ReadLine(), out sceltaArchiviazione);
+        }
+
+        if (sceltaArchiviazione == 1)
+        {
+            gestore = gestoreDatabase;
+        }
+        else
+        {
+            gestore = gestoreFile;
+        }
 
         while (true)
         {
@@ -96,6 +122,14 @@ class Program
                         Console.WriteLine("Errore durante la ricerca del cliente: " + ex.Message);
                     }
                     catch (InvalidOperationException ex)
+                    {
+                        Console.WriteLine($"Errore: {ex.Message}");
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Console.WriteLine($"Errore: {ex.Message}");
+                    }
+                    catch (IOException ex)
                     {
                         Console.WriteLine($"Errore: {ex.Message}");
                     }
@@ -189,12 +223,19 @@ class Program
                         }
                         catch (InvalidOperationException ex)
                         {
-                            Console.WriteLine("Errore: " + ex.Message);
-                            Console.WriteLine("Inserimento non riuscito. Riprova.");
+                            Console.WriteLine("Inserimento non riuscito. Riprova." + ex.Message);
                         }
                         catch (FormatException)
                         {
                             Console.WriteLine("Errore: Formato input non valido. Riprova.");
+                        }
+                        catch (IOException ex)
+                        {
+                            Console.WriteLine($"Errore: {ex.Message}");
+                        }
+                        catch (ArgumentException ex)
+                        {
+                            Console.WriteLine($"Errore: {ex.Message}");
                         }
                         catch (Exception ex)
                         {
@@ -298,6 +339,14 @@ class Program
                     catch (ArgumentNullException ex)
                     {
                         Console.WriteLine(ex.ParamName, ex.Message);
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Console.WriteLine($"Errore: {ex.Message}");
+                    }
+                    catch (IOException ex)
+                    {
+                        Console.WriteLine($"Errore: {ex.Message}");
                     }
                     catch (Exception ex)
                     {
