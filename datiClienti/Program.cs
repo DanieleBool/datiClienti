@@ -244,6 +244,18 @@ class Program
                             gestore.AggiungiCliente(nuovoCliente);
                             Console.WriteLine("Cliente aggiunto con successo.");
 
+                            //string dataDiNascita;
+                            //do
+                            //{
+                            //    Console.Write("Inserisci la data di nascita del cliente (formato: dd/MM/yyyy): ");
+                            //    dataDiNascita = Console.ReadLine();
+                            //} while (!gestore.ValidaData(dataDiNascita));
+
+                            //Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, DateTime.ParseExact(dataDiNascita, "dd/MM/yyyy", CultureInfo.InvariantCulture));
+
+                            //gestore.AggiungiCliente(nuovoCliente);
+                            //Console.WriteLine("Cliente aggiunto con successo.");
+
                             // Chiedi all'utente se vuole continuare ad aggiungere clienti
                             Console.WriteLine("Premi \"Invio\" per aggiungere un'altro cliente o \"N\" per uscire ");
                             string continua = Console.ReadLine().ToUpper();
@@ -254,11 +266,11 @@ class Program
                         }
                         catch (IOException ex)
                         {
-                            Console.WriteLine($"Errore: {ex.Message}");
+                            Console.WriteLine($"Errore file: {ex.Message}");
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("Errore generico: " + ex.Message);
+                            Console.WriteLine("Errore database: " + ex.Message);
                         }
                     }
                     break;
