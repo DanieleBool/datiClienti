@@ -14,15 +14,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        //// Carica le assembly
-        //Assembly assemblyGestore = Assembly.Load("AssemblyGestore");
-        //Assembly assemblyGestoreFile = Assembly.Load("AssemblyGestoreFile");
-        //Assembly clientiLibrary = Assembly.Load("ClientiLibrary");
-
-        //// Crea le istanze delle classi
-        //Type gestoreClientiType = assemblyGestore.GetType("AssemblyGestore.GestoreClienti");
-        //Type gestoreFileClientiType = assemblyGestoreFile.GetType("AssemblyGestoreFile.GestoreFileClienti");
-
+        // Carica gli assembly dinamicamente.
         Assembly assemblyGestore = Assembly.Load("AssemblyGestore");
         if (assemblyGestore == null)
         {
@@ -44,6 +36,7 @@ class Program
             return;
         }
 
+        // Ottengo informazioni dalle classi
         Type gestoreClientiType = assemblyGestore.GetType("AssemblyGestore.GestoreClienti");
         if (gestoreClientiType == null)
         {
@@ -58,14 +51,17 @@ class Program
             return;
         }
 
+        // Creo le istanze delle classi
         // CONNESSIONE DB
         string connectionDB = ConfigurationManager.AppSettings["DatabaseConnection"];
+        // Invoca il costruttore gestoreClientiType(GestoreClienti)(che ha tutte le info della classe GS) tramite la stringa di connessione per creare l'istanza GestoreClienti
         object gestoreDatabaseInstance = Activator.CreateInstance(gestoreClientiType, connectionDB);
 
         // CONNESSIONE FILE
         string filePercorso = ConfigurationManager.AppSettings["FileConnection"];
         object gestoreFileInstance = Activator.CreateInstance(gestoreFileClientiType, filePercorso);
 
+        // Converte le istanze create dinamicamente in oggetti che implementano l'interfaccia "IGestoreC".
         // Cast delle istanze create dinamicamente all'interfaccia IGestoreC
         IGestoreC gestoreDatabase = (IGestoreC)gestoreDatabaseInstance;
         IGestoreC gestoreFile = (IGestoreC)gestoreFileInstance;
@@ -79,7 +75,7 @@ class Program
             Console.WriteLine("1. Database");
             Console.WriteLine("2. File di testo");
             int.TryParse(Console.ReadLine(), out sceltaArchiviazione);
-        } while (sceltaArchiviazione != 1 && sceltaArchiviazione != 2);
+        } while (sceltaArchiviazione != 1 && sceltaArchiviazione != 2); // In base alla scelta dell'utente, usa l'istanza di "Gestore
 
         if (sceltaArchiviazione == 1)
         {
@@ -89,10 +85,6 @@ class Program
         {
             gestore = gestoreFile;
         }
-
-
-
-
 
         while (true)
         {
