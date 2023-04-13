@@ -9,6 +9,7 @@ using System.Text;
 using System.Configuration;
 using MySql.Data.MySqlClient;
 using System.Reflection;
+using Mysqlx.Prepare;
 
 class Program
 {
@@ -19,19 +20,18 @@ class Program
         Assembly assemblyGestoreFile = Assembly.Load("AssemblyGestoreFile");
         Assembly clientiLibrary = Assembly.Load("ClientiLibrary");
 
-        // Ottengo informazioni dalle classi
+        // Ottengo informazioni dalle classi con GetType
         Type gestoreClientiType = assemblyGestore.GetType("AssemblyGestore.GestoreClienti");
         Type gestoreFileClientiType = assemblyGestoreFile.GetType("AssemblyGestoreFile.GestoreFileClienti");
 
-        // Creo le istanze delle classi //
         // CONNESSIONE DB
         string connectionDB = ConfigurationManager.AppSettings["DatabaseConnection"];
-        // Invoca il costruttore gestoreClientiType(GestoreClienti)(che ha tutte le info della classe GS) tramite la stringa di connessione per creare l'istanza GestoreClienti
-        object gestoreDatabaseInstance = Activator.CreateInstance(gestoreClientiType, connectionDB);
-
         // CONNESSIONE FILE
         string filePercorso = ConfigurationManager.AppSettings["FileConnection"];
+
+        // Creo le istanze delle classi tramite Activator.CreateInstance(), chiamo il costruttore della classe GestoreClienti per creare l'istanza gestoreDatabaseInstance passando la stringa di connessione connectionDB.
         object gestoreFileInstance = Activator.CreateInstance(gestoreFileClientiType, filePercorso);
+        object gestoreDatabaseInstance = Activator.CreateInstance(gestoreClientiType, connectionDB);
 
         IGestoreC gestore;
         int sceltaArchiviazione;
@@ -45,7 +45,8 @@ class Program
 
         if (sceltaArchiviazione == 1)
         {
-            // Converte le istanze(cast) create dinamicamente in oggetti che implementano l'interfaccia "IGestoreC" per poi assegnare l'oggetto alla scelta()
+            // Creo un'istanza dell'oggetto GestoreClienti con il metodo "Activator.CreateInstance" usando il costruttore che richiede una stringa di connessione come parametro.
+            // Infine, viene effettuato un cast(Converte le istanze) dell'oggetto GestoreClienti all'interfaccia "IGestoreC" e viene assegnato all'oggetto "gestore".
             gestore = (IGestoreC)Activator.CreateInstance(gestoreClientiType, connectionDB);
         }
         else
