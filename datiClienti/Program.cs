@@ -1,7 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using ClientiLibrary;
 using AssemblyGestore;
-//using AssemblyGestoreFile;
+using AssemblyGestoreFile;
 using System;
 using System.Globalization;
 using System.IO;
@@ -14,50 +14,64 @@ class Program
 {
     static void Main(string[] args)
     {
-        // Stringhe di connessione
-        string connectionDB = ConfigurationManager.AppSettings["DatabaseConnection"];
-        if (string.IsNullOrEmpty(connectionDB))
+        //// Carica le assembly
+        //Assembly assemblyGestore = Assembly.Load("AssemblyGestore");
+        //Assembly assemblyGestoreFile = Assembly.Load("AssemblyGestoreFile");
+        //Assembly clientiLibrary = Assembly.Load("ClientiLibrary");
+
+        //// Crea le istanze delle classi
+        //Type gestoreClientiType = assemblyGestore.GetType("AssemblyGestore.GestoreClienti");
+        //Type gestoreFileClientiType = assemblyGestoreFile.GetType("AssemblyGestoreFile.GestoreFileClienti");
+
+        Assembly assemblyGestore = Assembly.Load("AssemblyGestore");
+        if (assemblyGestore == null)
         {
-            throw new ArgumentException("La stringa di connessione al database non è stata configurata correttamente.");
+            Console.WriteLine("Errore nel caricamento dell'assembly AssemblyGestore.");
+            return;
         }
 
-        string filePercorso = ConfigurationManager.AppSettings["FileConnection"];
-        if (string.IsNullOrEmpty(filePercorso))
+        Assembly assemblyGestoreFile = Assembly.Load("AssemblyGestoreFile");
+        if (assemblyGestoreFile == null)
         {
-            throw new ArgumentException("Il percorso del file non è stato configurato correttamente.");
+            Console.WriteLine("Errore nel caricamento dell'assembly AssemblyGestoreFile.");
+            return;
         }
 
         Assembly clientiLibrary = Assembly.Load("ClientiLibrary");
+        if (clientiLibrary == null)
+        {
+            Console.WriteLine("Errore nel caricamento dell'assembly ClientiLibrary.");
+            return;
+        }
 
-        //// CONNESSIONE DB //
-        //string connectionDB = ConfigurationManager.AppSettings["DatabaseConnection"]; // Leggi la stringa di connessione da app.config  
-        //IGestoreC gestoreDatabase = new GestoreClienti(connectionDB); // Crea un'istanza di GestoreClienti e passa la stringa di connessione
-        //// CONNESSIONE FILE //
-        //string filePercorso = ConfigurationManager.AppSettings["FileConnection"];
-        //IGestoreC gestoreFile = new GestoreFileClienti(filePercorso); //creo un istanza della classe GestoreFileClienti con il colegamento al file .txt
+        Type gestoreClientiType = assemblyGestore.GetType("AssemblyGestore.GestoreClienti");
+        if (gestoreClientiType == null)
+        {
+            Console.WriteLine("Errore nel caricamento del tipo AssemblyGestore.GestoreClienti.");
+            return;
+        }
 
-        //IGestoreC gestore;
+        Type gestoreFileClientiType = assemblyGestoreFile.GetType("AssemblyGestoreFile.GestoreFileClienti");
+        if (gestoreFileClientiType == null)
+        {
+            Console.WriteLine("Errore nel caricamento del tipo AssemblyGestoreFile.GestoreFileClienti.");
+            return;
+        }
 
-        //int sceltaArchiviazione;
-        //do
-        //{
-        //    Console.WriteLine("Scegli un metodo di archiviazione: \n");
-        //    Console.WriteLine("1. Database");
-        //    Console.WriteLine("2. File di testo");
-        //    int.TryParse(Console.ReadLine(), out sceltaArchiviazione);
-        //    //se avessi usato || in ciclo sarebbe continuato perchè non sarebbe stata soddisfatta una delle due condizioni
-        //} while (sceltaArchiviazione != 1 && sceltaArchiviazione != 2);
+        // CONNESSIONE DB
+        string connectionDB = ConfigurationManager.AppSettings["DatabaseConnection"];
+        object gestoreDatabaseInstance = Activator.CreateInstance(gestoreClientiType, connectionDB);
 
-        //if (sceltaArchiviazione == 1)
-        //{
-        //    gestore = gestoreDatabase;
-        //}
-        //else
-        //{
-        //    gestore = gestoreFile;
-        //}
+        // CONNESSIONE FILE
+        string filePercorso = ConfigurationManager.AppSettings["FileConnection"];
+        object gestoreFileInstance = Activator.CreateInstance(gestoreFileClientiType, filePercorso);
+
+        // Cast delle istanze create dinamicamente all'interfaccia IGestoreC
+        IGestoreC gestoreDatabase = (IGestoreC)gestoreDatabaseInstance;
+        IGestoreC gestoreFile = (IGestoreC)gestoreFileInstance;
 
         IGestoreC gestore;
+
         int sceltaArchiviazione;
         do
         {
@@ -65,19 +79,18 @@ class Program
             Console.WriteLine("1. Database");
             Console.WriteLine("2. File di testo");
             int.TryParse(Console.ReadLine(), out sceltaArchiviazione);
-            //se avessi usato || in ciclo sarebbe continuato perchè non sarebbe stata soddisfatta una delle due condizioni
         } while (sceltaArchiviazione != 1 && sceltaArchiviazione != 2);
 
         if (sceltaArchiviazione == 1)
         {
-            Type gestoreClientiType = clientiLibrary.GetType("AssemblyGestore.GestoreClienti");
-            gestore = (IGestoreC)Activator.CreateInstance(gestoreClientiType, new object[] { connectionDB });
+            gestore = gestoreDatabase;
         }
         else
         {
-            Type gestoreFileClientiType = clientiLibrary.GetType("ClientiLibrary.GestoreFileClienti");
-            gestore = (IGestoreC)Activator.CreateInstance(gestoreFileClientiType, new object[] { filePercorso });
+            gestore = gestoreFile;
         }
+
+
 
 
 

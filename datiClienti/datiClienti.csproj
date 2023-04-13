@@ -13,9 +13,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\AssemblyGestoreFile\AssemblyGestoreFile\AssemblyGestoreFile.csproj" />
+    <ProjectReference Include="..\..\AssemblyGestore\AssemblyGestore.csproj" />
     <ProjectReference Include="..\..\ClientiLibrary\ClientiLibrary\ClientiLibrary.csproj" />
-
-	  <ProjectReference Include="..\..\AssemblyGestore\AssemblyGestore.csproj" />
   </ItemGroup>
 
 </Project>
