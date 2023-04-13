@@ -16,42 +16,14 @@ class Program
     {
         // Carica gli assembly dinamicamente.
         Assembly assemblyGestore = Assembly.Load("AssemblyGestore");
-        if (assemblyGestore == null)
-        {
-            Console.WriteLine("Errore nel caricamento dell'assembly AssemblyGestore.");
-            return;
-        }
-
         Assembly assemblyGestoreFile = Assembly.Load("AssemblyGestoreFile");
-        if (assemblyGestoreFile == null)
-        {
-            Console.WriteLine("Errore nel caricamento dell'assembly AssemblyGestoreFile.");
-            return;
-        }
-
         Assembly clientiLibrary = Assembly.Load("ClientiLibrary");
-        if (clientiLibrary == null)
-        {
-            Console.WriteLine("Errore nel caricamento dell'assembly ClientiLibrary.");
-            return;
-        }
 
         // Ottengo informazioni dalle classi
         Type gestoreClientiType = assemblyGestore.GetType("AssemblyGestore.GestoreClienti");
-        if (gestoreClientiType == null)
-        {
-            Console.WriteLine("Errore nel caricamento del tipo AssemblyGestore.GestoreClienti.");
-            return;
-        }
-
         Type gestoreFileClientiType = assemblyGestoreFile.GetType("AssemblyGestoreFile.GestoreFileClienti");
-        if (gestoreFileClientiType == null)
-        {
-            Console.WriteLine("Errore nel caricamento del tipo AssemblyGestoreFile.GestoreFileClienti.");
-            return;
-        }
 
-        // Creo le istanze delle classi
+        // Creo le istanze delle classi //
         // CONNESSIONE DB
         string connectionDB = ConfigurationManager.AppSettings["DatabaseConnection"];
         // Invoca il costruttore gestoreClientiType(GestoreClienti)(che ha tutte le info della classe GS) tramite la stringa di connessione per creare l'istanza GestoreClienti
@@ -62,7 +34,6 @@ class Program
         object gestoreFileInstance = Activator.CreateInstance(gestoreFileClientiType, filePercorso);
 
         IGestoreC gestore;
-
         int sceltaArchiviazione;
         do
         {
@@ -74,6 +45,7 @@ class Program
 
         if (sceltaArchiviazione == 1)
         {
+            // Converte le istanze(cast) create dinamicamente in oggetti che implementano l'interfaccia "IGestoreC" per poi assegnare l'oggetto alla scelta()
             gestore = (IGestoreC)Activator.CreateInstance(gestoreClientiType, connectionDB);
         }
         else
