@@ -9,6 +9,7 @@ using System.Text;
 using System.Configuration;
 using MySql.Data.MySqlClient;
 using System.Reflection;
+using MySqlX.XDevAPI;
 
 class Program
 {
@@ -294,6 +295,7 @@ class Program
                         //    nuovoNome = clienteDaModificare.Nome;
                         //}
 
+                        //se l'utente non inserisce alcun valore per la nuova città, il codice mantiene il valore della città attuale del cliente. Se l'utente inserisce un nuovo valore, il codice aggiorna la città del cliente con il nuovo valore inserito.
                         Console.Write($"Inserisci il nuovo nome del cliente ({clienteDaModificare.Nome}): ");
                         string nuovoNome = Console.ReadLine();
                         nuovoNome = string.IsNullOrEmpty(nuovoNome) ? clienteDaModificare.Nome : nuovoNome;
