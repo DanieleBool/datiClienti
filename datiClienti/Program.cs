@@ -9,7 +9,6 @@ using System.Text;
 using System.Configuration;
 using MySql.Data.MySqlClient;
 using System.Reflection;
-using MySqlX.XDevAPI;
 
 class Program
 {
@@ -62,11 +61,6 @@ class Program
         string filePercorso = ConfigurationManager.AppSettings["FileConnection"];
         object gestoreFileInstance = Activator.CreateInstance(gestoreFileClientiType, filePercorso);
 
-        // Converte le istanze create dinamicamente in oggetti che implementano l'interfaccia "IGestoreC".
-        // Cast delle istanze create dinamicamente all'interfaccia IGestoreC
-        IGestoreC gestoreDatabase = (IGestoreC)gestoreDatabaseInstance;
-        IGestoreC gestoreFile = (IGestoreC)gestoreFileInstance;
-
         IGestoreC gestore;
 
         int sceltaArchiviazione;
@@ -80,11 +74,11 @@ class Program
 
         if (sceltaArchiviazione == 1)
         {
-            gestore = gestoreDatabase;
+            gestore = (IGestoreC)Activator.CreateInstance(gestoreClientiType, connectionDB);
         }
         else
         {
-            gestore = gestoreFile;
+            gestore = (IGestoreC)Activator.CreateInstance(gestoreFileClientiType, filePercorso);
         }
 
         while (true)
@@ -359,11 +353,7 @@ class Program
                     }
                     catch (MySqlException ex)
                     {
-                        Console.WriteLine(ex.Message);
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        Console.WriteLine($"Errore: {ex.Message}");
+                        Console.WriteLine("Database" + ex.Message);
                     }
                     catch (IOException ex)
                     {
