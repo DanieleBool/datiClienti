@@ -179,11 +179,11 @@ class Program
                         {
                             Console.Write("Inserisci l'ID del cliente: ");
                             string id = Console.ReadLine();
-                            if ((id.Length < 1) || (id.Length > 5) || (id == null))
-                            {
-                                Console.WriteLine("L'ID del cliente deve essere di 5 caratteri.");
-                                break;
-                            }
+                            //if ((id.Length < 1) || (id.Length > 5) || (id == null))
+                            //{
+                            //    Console.WriteLine("L'ID del cliente deve essere di 5 caratteri.");
+                            //    break;
+                            //}
 
                             string nome;
                             do
@@ -227,7 +227,7 @@ class Program
                                 Console.Write("Inserisci la data di nascita del cliente (formato: dd/MM/yyyy): ");
                                 string dataInserita = Console.ReadLine();
 
-                                string[] formatiData = { "dd/MM/yyyy", "dd-MM-yyyy", "yyyyMMdd" };
+                                string[] formatiData = { "dd/MM/yyyy", "dd-MM-yyyy", "ddMMyyyy" };
                                 //L'array formatiData contiene i formati che verranno provati uno alla volta per verificare se la stringa inserita dall'utente corrisponde a uno di essi, metterdo dopo la irgola fa parte di DateTime.TryParseExact
                                 if (!DateTime.TryParseExact(dataInserita, formatiData, CultureInfo.InvariantCulture, DateTimeStyles.None, out dataDiNascita))
                                 {
@@ -262,7 +262,6 @@ class Program
                         }
                     }
                     break;
-
 
                 // MODIFICA CLIENTE //
                 case 3: 
@@ -338,11 +337,8 @@ class Program
 
                         } while (true);
 
-
                         // Creo il nuovo oggetto
                         Cliente clienteModificato = new Cliente(idCliente, nuovoNome, nuovoCognome, nuovaCitta, nuovoSesso, nuovaDataDiNascita);
-
-                        // Eccezioni
 
                         gestore.ModificaCliente(idCliente, clienteModificato); // Si avvia il metodo
                         Console.WriteLine("Cliente modificato con successo.");
