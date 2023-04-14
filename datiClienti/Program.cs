@@ -1,7 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using ClientiLibrary;
-using AssemblyGestore;
-using AssemblyGestoreFile;
+//using AssemblyGestore;
+//using AssemblyGestoreFile;
 using System;
 using System.Globalization;
 using System.IO;
@@ -9,7 +9,9 @@ using System.Text;
 using System.Configuration;
 using MySql.Data.MySqlClient;
 using System.Reflection;
-using Mysqlx.Prepare;
+using AssemblyGestoreFile;
+using MySqlX.XDevAPI;
+//using Mysqlx.Prepare;
 
 class Program
 {
@@ -67,7 +69,6 @@ class Program
 
             switch (opzione)
             {
-
                 // CERCA CLIENTE //
                 case 1:
                     try
@@ -128,10 +129,10 @@ class Program
                             }
                         }
                     }
-                    catch (IOException ex)
-                    {
-                        Console.WriteLine($"Errore: {ex.Message}");
-                    }
+                    //catch (IOException ex)
+                    //{
+                    //    Console.WriteLine($"Errore: {ex.Message}");
+                    //}
                     catch (Exception ex)
                     {
                         Console.WriteLine($"Errore generico: {ex.Message}");
@@ -193,36 +194,16 @@ class Program
                             while (true)
                             {
                                 Console.Write("Inserisci la data di nascita del cliente (formato: dd/MM/yyyy): ");
-                                string dataInserita = Console.ReadLine();
+                                string dataInput = Console.ReadLine();
 
-                                string[] formatiData = { "dd/MM/yyyy", "dd-MM-yyyy", "ddMMyyyy" };
-                                //L'array formatiData contiene i formati che verranno provati uno alla volta per verificare se la stringa inserita dall'utente corrisponde a uno di essi, metterdo dopo la irgola fa parte di DateTime.TryParseExact
-                                if (!DateTime.TryParseExact(dataInserita, formatiData, CultureInfo.InvariantCulture, DateTimeStyles.None, out dataDiNascita))
-                                {
-                                    Console.WriteLine("Formato data non valido. Riprova.");
-                                }
-                                else
-                                {
+                                    dataDiNascita = Cliente.ValidaData(dataInput);
                                     break;
-                                }
                             }
 
                             Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, dataDiNascita);
 
                             gestore.AggiungiCliente(nuovoCliente);
                             Console.WriteLine("Cliente aggiunto con successo.");
-
-                            //string dataDiNascita;
-                            //do
-                            //{
-                            //    Console.Write("Inserisci la data di nascita del cliente (formato: dd/MM/yyyy): ");
-                            //    dataDiNascita = Console.ReadLine();
-                            //} while (!gestore.ValidaData(dataDiNascita));
-
-                            //Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, DateTime.ParseExact(dataDiNascita, "dd/MM/yyyy", CultureInfo.InvariantCulture));
-
-                            //gestore.AggiungiCliente(nuovoCliente);
-                            //Console.WriteLine("Cliente aggiunto con successo.");
 
                             // Chiedi all'utente se vuole continuare ad aggiungere clienti
                             Console.WriteLine("Premi \"Invio\" per aggiungere un'altro cliente o \"N\" per uscire ");
@@ -275,7 +256,6 @@ class Program
                         string nuovaCitta = Console.ReadLine();
                         nuovaCitta = string.IsNullOrEmpty(nuovaCitta) ? clienteDaModificare.Citta : nuovaCitta;
 
-                        //SESSO
                         string nuovoSesso = clienteDaModificare.Sesso; // nuovoSesso sarà uguale al sesso originale, in questo modo non cambia se non nell'"else if"
                         while (true)
                         {
@@ -286,14 +266,14 @@ class Program
                             {
                                 break;
                             }
-                            else if (inputSesso == "M" || inputSesso == "F")
-                            {
-                                nuovoSesso = inputSesso; // Aggiorna il valore di nuovoSesso solo se l'input è valido
-                                break;
-                            }
                             else
                             {
-                                Console.WriteLine("Sesso non valido. Inserisci 'M' o 'F'.");
+                                if(true)
+                                {
+                                    Cliente.ValidaSesso(inputSesso);
+                                    nuovoSesso = inputSesso; // Aggiorna il valore di nuovoSesso solo se l'input è valido
+                                    break;
+                                }
                             }
                         }
 
@@ -309,7 +289,7 @@ class Program
                                 break;
                             }
 
-                            if (DateTime.TryParseExact(nuovaDataInserita, new[] { "ddMMyyyy", "dd/MM/yyyy" },
+                            if (DateTime.TryParseExact(nuovaDataInserita, new[] { "ddMMyyyy", "dd/MM/yyyy, dd-MM-yyyy" },
                                 CultureInfo.InvariantCulture, DateTimeStyles.None, out nuovaDataDiNascita))
                             {
                                 break;
@@ -339,7 +319,6 @@ class Program
                     
                     break;
                     
-
                // ELIMINA CLIENTE //
                 case 4:
                     Console.WriteLine("Inserisci l'ID del cliente da eliminare");
@@ -363,3 +342,41 @@ class Program
         }
     }
 }
+
+
+
+
+
+//string dataDiNascita;
+//do
+//{
+//    Console.Write("Inserisci la data di nascita del cliente (formato: dd/MM/yyyy): ");
+//    dataDiNascita = Console.ReadLine();
+//} while (!gestore.ValidaData(dataDiNascita));
+
+//Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, DateTime.ParseExact(dataDiNascita, "dd/MM/yyyy", CultureInfo.InvariantCulture));
+
+//gestore.AggiungiCliente(nuovoCliente);
+//Console.WriteLine("Cliente aggiunto con successo.");
+
+//SESSO
+//string nuovoSesso = clienteDaModificare.Sesso; // nuovoSesso sarà uguale al sesso originale, in questo modo non cambia se non nell'"else if"
+//while (true)
+//{
+//    Console.Write($"Inserisci il nuovo sesso del cliente ({clienteDaModificare.Sesso}): ");
+//    string inputSesso = Console.ReadLine().ToUpper();
+
+//    if (string.IsNullOrEmpty(inputSesso)) // se l'input è vuoto mantiene l'info esistente
+//    {
+//        break;
+//    }
+//    else if (inputSesso == "M" || inputSesso == "F")
+//    {
+//        nuovoSesso = inputSesso; // Aggiorna il valore di nuovoSesso solo se l'input è valido
+//        break;
+//    }
+//    else
+//    {
+//        Console.WriteLine("Sesso non valido. Inserisci 'M' o 'F'.");
+//    }
+//}
