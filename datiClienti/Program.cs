@@ -17,24 +17,12 @@ class Program
 {
     static void Main(string[] args)
     {
-        // Carica gli assembly dinamicamente.
-        Assembly assemblyGestore = Assembly.Load("AssemblyGestore");
-        Assembly assemblyGestoreFile = Assembly.Load("AssemblyGestoreFile");
-        Assembly clientiLibrary = Assembly.Load("ClientiLibrary");
+        
+        
 
-        // Ottengo informazioni dalle classi con GetType
-        Type gestoreClientiType = assemblyGestore.GetType("AssemblyGestore.GestoreClienti");
-        Type gestoreFileClientiType = assemblyGestoreFile.GetType("AssemblyGestoreFile.GestoreFileClienti");
+       
 
-        // CONNESSIONE DB
-        string connectionDB = ConfigurationManager.AppSettings["DatabaseConnection"];
-        // CONNESSIONE FILE
-        string filePercorso = ConfigurationManager.AppSettings["FileConnection"];
-
-        // Creo le istanze delle classi tramite Activator.CreateInstance(), chiamo il costruttore della classe GestoreClienti per creare l'istanza gestoreDatabaseInstance passando la stringa di connessione connectionDB.
-        object gestoreFileInstance = Activator.CreateInstance(gestoreFileClientiType, filePercorso);
-        object gestoreDatabaseInstance = Activator.CreateInstance(gestoreClientiType, connectionDB);
-
+        
         IGestoreC gestore;
         int sceltaArchiviazione;
         do
@@ -47,12 +35,20 @@ class Program
 
         if (sceltaArchiviazione == 1)
         {
-            // Creo un'istanza dell'oggetto GestoreClienti con il metodo "Activator.CreateInstance" usando il costruttore che richiede una stringa di connessione come parametro.
-            // Infine, viene effettuato un cast(Converte le istanze) dell'oggetto GestoreClienti all'interfaccia "IGestoreC" e viene assegnato all'oggetto "gestore".
+            //Carico assembly e tipo da file
+            Assembly assemblyGestore = Assembly.LoadFrom(@"C:\Users\d.dieleuterio\source\repos\AssemblyGestore\bin\Debug\net6.0\AssemblyGestore.dll");
+            Type gestoreClientiType = assemblyGestore.GetType("AssemblyGestore.GestoreClienti");
+            string connectionDB = ConfigurationManager.AppSettings["DatabaseConnection"];
+            // Creo un'istanza dell'oggetto GestoreClienti con il metodo "Activator.CreateInstance" usando il costruttore che richiede una stringa di connessione come parametro. e lo assegno direttamente a "gestore"
+            // Infine, viene effettuato un cast (Converte le istanze) dell'oggetto GestoreClienti all'interfaccia "IGestoreC" e viene assegnato all'oggetto "gestore".
             gestore = (IGestoreC)Activator.CreateInstance(gestoreClientiType, connectionDB);
         }
         else
         {
+            //Carico assembly e tipo da file
+            Assembly assemblyGestoreFile = Assembly.LoadFrom(@"C:\Users\d.dieleuterio\source\repos\AssemblyGestoreFile\AssemblyGestoreFile\bin\Debug\net6.0\AssemblyGestoreFile.dll");
+            Type gestoreFileClientiType = assemblyGestoreFile.GetType("AssemblyGestoreFile.GestoreFileClienti");
+            string filePercorso = ConfigurationManager.AppSettings["FileConnection"];
             gestore = (IGestoreC)Activator.CreateInstance(gestoreFileClientiType, filePercorso);
         }
 
@@ -226,6 +222,10 @@ class Program
 
                 // MODIFICA CLIENTE //
                 case 3: 
+                    //specifica funzione
+                    
+
+
                     Console.Write("Inserisci l'ID del cliente da modificare: ");
                     string idCliente = Console.ReadLine();
                     try
@@ -341,42 +341,12 @@ class Program
             }
         }
     }
+
+    private void InsertClient()
+    {
+
+    }
 }
 
 
 
-
-
-//string dataDiNascita;
-//do
-//{
-//    Console.Write("Inserisci la data di nascita del cliente (formato: dd/MM/yyyy): ");
-//    dataDiNascita = Console.ReadLine();
-//} while (!gestore.ValidaData(dataDiNascita));
-
-//Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, DateTime.ParseExact(dataDiNascita, "dd/MM/yyyy", CultureInfo.InvariantCulture));
-
-//gestore.AggiungiCliente(nuovoCliente);
-//Console.WriteLine("Cliente aggiunto con successo.");
-
-//SESSO
-//string nuovoSesso = clienteDaModificare.Sesso; // nuovoSesso sarà uguale al sesso originale, in questo modo non cambia se non nell'"else if"
-//while (true)
-//{
-//    Console.Write($"Inserisci il nuovo sesso del cliente ({clienteDaModificare.Sesso}): ");
-//    string inputSesso = Console.ReadLine().ToUpper();
-
-//    if (string.IsNullOrEmpty(inputSesso)) // se l'input è vuoto mantiene l'info esistente
-//    {
-//        break;
-//    }
-//    else if (inputSesso == "M" || inputSesso == "F")
-//    {
-//        nuovoSesso = inputSesso; // Aggiorna il valore di nuovoSesso solo se l'input è valido
-//        break;
-//    }
-//    else
-//    {
-//        Console.WriteLine("Sesso non valido. Inserisci 'M' o 'F'.");
-//    }
-//}
