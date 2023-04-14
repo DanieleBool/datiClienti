@@ -17,12 +17,6 @@ class Program
 {
     static void Main(string[] args)
     {
-        
-        
-
-       
-
-        
         IGestoreC gestore;
         int sceltaArchiviazione;
         do
@@ -31,7 +25,7 @@ class Program
             Console.WriteLine("1. Database");
             Console.WriteLine("2. File di testo");
             int.TryParse(Console.ReadLine(), out sceltaArchiviazione);
-        } while (sceltaArchiviazione != 1 && sceltaArchiviazione != 2); // In base alla scelta dell'utente, usa l'istanza di "Gestore
+        } while (sceltaArchiviazione != 1 && sceltaArchiviazione != 2);
 
         if (sceltaArchiviazione == 1)
         {
@@ -137,87 +131,9 @@ class Program
 
                 // AGGIUNGI CLIENTE //
                 case 2:
-                    bool continuaAdAggiungereClienti = true;
-                    while (continuaAdAggiungereClienti)
-                    {
-                        try
-                        {
-                            Console.Write("Inserisci l'ID del cliente: ");
-                            string id = Console.ReadLine();
-                            //if ((id.Length < 1) || (id.Length > 5) || (id == null))
-                            //{
-                            //    Console.WriteLine("L'ID del cliente deve essere di 5 caratteri.");
-                            //    break;
-                            //}
-
-                            string nome;
-                            do
-                            {
-                                Console.Write("Inserisci il nome del cliente: ");
-                                nome = Console.ReadLine();
-                            } while (string.IsNullOrEmpty(nome));
-
-                            string cognome;
-                            do
-                            {
-                                Console.Write("Inserisci il cognome del cliente: ");
-                                cognome = Console.ReadLine();
-                            } while (string.IsNullOrEmpty(cognome));
-
-                            string citta;
-                            do
-                            {
-                                Console.Write("Inserisci la città del cliente: ");
-                                citta = Console.ReadLine();
-                            } while (string.IsNullOrEmpty(citta));
-
-                            string sesso = string.Empty;
-                            while (string.IsNullOrEmpty(sesso))
-                            {
-                                Console.Write("Inserisci il sesso del cliente (M/F): ");
-                                string sessoInput = Console.ReadLine().ToUpper();
-                                if (sessoInput == "M" || sessoInput == "F")
-                                {
-                                    sesso = sessoInput;
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Inserimento non valido. Inserisci 'M' o 'F'.");
-                                }
-                            }
-
-                            DateTime dataDiNascita;
-                            while (true)
-                            {
-                                Console.Write("Inserisci la data di nascita del cliente (formato: dd/MM/yyyy): ");
-                                string dataInput = Console.ReadLine();
-
-                                    dataDiNascita = Cliente.ValidaData(dataInput);
-                                    break;
-                            }
-
-                            Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, dataDiNascita);
-
-                            gestore.AggiungiCliente(nuovoCliente);
-                            Console.WriteLine("Cliente aggiunto con successo.");
-
-                            // Chiedi all'utente se vuole continuare ad aggiungere clienti
-                            Console.WriteLine("Premi \"Invio\" per aggiungere un'altro cliente o \"N\" per uscire ");
-                            string continua = Console.ReadLine().ToUpper();
-                            if (continua == "N")
-                            {
-                                continuaAdAggiungereClienti = false;
-                            }
-                        }
-                        catch (IOException ex)
-                        {
-                            Console.WriteLine($"Errore file: {ex.Message}");
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine("Errore database: " + ex.Message);
-                        }
-                    }
+                    Cliente nuovoCliente = InsertClient(); // Creo un istanza per utilizzare il metodo, se il metodo fosse stato statico non ne avrei avuto bisogno
+                    gestore.AggiungiCliente(nuovoCliente);
+                    Console.WriteLine("Cliente aggiunto con successo.");
                     break;
 
                 // MODIFICA CLIENTE //
@@ -342,11 +258,96 @@ class Program
         }
     }
 
-    private void InsertClient()
+    private static Cliente InsertClient()
     {
+        bool continuaAdAggiungereClienti = true;
+        while (continuaAdAggiungereClienti)
+        {
+            try
+            {
+                Console.Write("Inserisci l'ID del cliente: ");
+                string id = Console.ReadLine();
 
+                // Richiesta input e validazione del nome
+                string nome;
+                do
+                {
+                    Console.Write("Inserisci il nome del cliente: ");
+                    nome = Console.ReadLine();
+                } while (string.IsNullOrEmpty(nome));
+
+                // Richiesta input e validazione del cognome
+                string cognome;
+                do
+                {
+                    Console.Write("Inserisci il cognome del cliente: ");
+                    cognome = Console.ReadLine();
+                } while (string.IsNullOrEmpty(cognome));
+
+                // Richiesta input e validazione della città
+                string citta;
+                do
+                {
+                    Console.Write("Inserisci la città del cliente: ");
+                    citta = Console.ReadLine();
+                } while (string.IsNullOrEmpty(citta));
+
+                // Richiesta input e validazione del sesso
+                string sesso = string.Empty;
+                while (string.IsNullOrEmpty(sesso))
+                {
+                    Console.Write("Inserisci il sesso del cliente (M/F): ");
+                    string sessoInput = Console.ReadLine().ToUpper();
+                    if (sessoInput == "M" || sessoInput == "F")
+                    {
+                        sesso = sessoInput;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Inserimento non valido. Inserisci 'M' o 'F'.");
+                    }
+                }
+
+                // Richiesta input e validazione della data di nascita
+                DateTime dataDiNascita;
+                while (true)
+                {
+                    Console.Write("Inserisci la data di nascita del cliente (formato: dd/MM/yyyy): ");
+                    string dataInput = Console.ReadLine();
+
+                    dataDiNascita = Cliente.ValidaData(dataInput);
+                    break;
+                }
+
+                // Creazione oggetto cliente con i dati inseriti
+                Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, dataDiNascita);
+
+                // Chiedi all'utente se vuole continuare ad aggiungere clienti
+                Console.WriteLine("Cliente aggiunto con successo.");
+                Console.WriteLine("Premi \"Invio\" per aggiungere un altro cliente o \"N\" per uscire ");
+                string continua = Console.ReadLine().ToUpper();
+                if (continua == "N")
+                {
+                    continuaAdAggiungereClienti = false;
+                }
+
+                return nuovoCliente; // ritorna l'oggetto cliente appena creato
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine($"Errore file: {ex.Message}");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Errore database: " + ex.Message);
+                throw;
+            }
+        }
+
+        return null; // se continuaAdAggiungere
+        }
     }
-}
 
 
 
