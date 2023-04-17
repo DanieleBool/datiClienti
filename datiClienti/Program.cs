@@ -1,7 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using ClientiLibrary;
-//using AssemblyGestore;
-//using AssemblyGestoreFile;
 using System;
 using System.Globalization;
 using System.IO;
@@ -11,7 +9,6 @@ using MySql.Data.MySqlClient;
 using System.Reflection;
 using MySqlX.XDevAPI;
 using System.Diagnostics;
-//using Mysqlx.Prepare;
 
 class Program
 {
@@ -62,72 +59,7 @@ class Program
             {
                 // CERCA CLIENTE //
                 case 1:
-                    try
-                    {
-                        Console.WriteLine("Scegli l'informazione da cercare:");
-                        Console.WriteLine("1. ID");
-                        Console.WriteLine("2. Nome");
-                        Console.WriteLine("3. Cognome");
-                        Console.WriteLine("4. Città");
-                        Console.WriteLine("5. Sesso");
-                        Console.WriteLine("6. Data di Nascita");
-
-                        string scelta;
-                        int sceltaInt;
-                        do
-                        {
-                            scelta = Console.ReadLine();
-                            int.TryParse(scelta, out sceltaInt);
-                            if (sceltaInt < 1 || sceltaInt > 6)
-                            {
-                                Console.WriteLine("Inserisci un numero tra 1 e 6:");
-                            }
-                        } while (sceltaInt < 1 || sceltaInt > 6);
-
-                        switch (scelta)
-                        {
-                            case "1":
-                                scelta = "ID";
-                                break;
-                            case "2":
-                                scelta = "Nome";
-                                break;
-                            case "3":
-                                scelta = "Cognome";
-                                break;
-                            case "4":
-                                scelta = "Citta";
-                                break;
-                            case "5":
-                                scelta = "Sesso";
-                                break;
-                            case "6":
-                                scelta = "DataDiNascita";
-                                break;
-                        }
-
-                        Console.WriteLine("Scrivi l'informazione da cercare:");
-                        string parametroRicerca = Console.ReadLine();
-
-                        List<Cliente> clientiOut = gestore.CercaCliente(parametroRicerca, scelta);
-
-                        if (clientiOut.Count > 0)
-                        {
-                            Console.WriteLine("Clienti trovati:");
-                            foreach (Cliente cliente in clientiOut)
-                            {
-                                Console.WriteLine(cliente.ToRead());
-                            }
-                        }
-                    }
-                    //catch (IOException ex)
-                    //{
-                    //    Console.WriteLine($"Errore: {ex.Message}");
-                    //}
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Errore generico: {ex.Message}");
-                    }
+                    FindClient(gestore);
                     break;
 
                 // AGGIUNGI CLIENTE //
@@ -139,125 +71,12 @@ class Program
 
                 // MODIFICA CLIENTE //
                 case 3:
-                    //specifica funzione
-
-
-
-                    Console.Write("Inserisci l'ID del cliente da modificare: ");
-                    string idCliente = Console.ReadLine();
-                    try
-                    {
-                        // Tramite Find  estraggo da CercaCliente il cliente con l'ID corrispondente alla ricerca(quindi lo estraggo ma non lo leggo in console come nel case1)
-                        // crca nel file tramite il metodo CercaCliente con il paramentro di scelta inpostato su "ID" e usa FirstOrDefault() per estrarre il primo oggetto Cliente trovato nel file o null se la lista è vuota.
-                        Cliente clienteDaModificare = gestore.CercaCliente(idCliente, "ID").Find(cliente => cliente.ID == idCliente); //.FirstOrDefault();
-
-                        Console.WriteLine("Inserisci le nuove informazioni del cliente o premi Invio per mantenere le informazioni attuali:");
-
-                        //Console.Write($"Inserisci il nuovo nome del cliente ({clienteDaModificare.Nome}): ");
-                        //string nuovoNome = Console.ReadLine();
-                        //if (string.IsNullOrEmpty(nuovoNome))
-                        //{
-                        //    nuovoNome = clienteDaModificare.Nome;
-                        //}
-
-                        //se l'utente non inserisce alcun valore per la nuova città, il codice mantiene il valore della città attuale del cliente. Se l'utente inserisce un nuovo valore, il codice aggiorna la città del cliente con il nuovo valore inserito.
-                        Console.Write($"Inserisci il nuovo nome del cliente ({clienteDaModificare.Nome}): ");
-                        string nuovoNome = Console.ReadLine();
-                        nuovoNome = string.IsNullOrEmpty(nuovoNome) ? clienteDaModificare.Nome : nuovoNome;
-
-                        Console.Write($"Inserisci il nuovo cognome del cliente ({clienteDaModificare.Cognome}): ");
-                        string nuovoCognome = Console.ReadLine();
-                        nuovoCognome = string.IsNullOrEmpty(nuovoCognome) ? clienteDaModificare.Cognome : nuovoCognome;
-
-                        Console.Write($"Inserisci la nuova città del cliente ({clienteDaModificare.Citta}): ");
-                        string nuovaCitta = Console.ReadLine();
-                        nuovaCitta = string.IsNullOrEmpty(nuovaCitta) ? clienteDaModificare.Citta : nuovaCitta;
-
-                        string nuovoSesso = clienteDaModificare.Sesso; // nuovoSesso sarà uguale al sesso originale, in questo modo non cambia se non nell'"else if"
-                        while (true)
-                        {
-                            Console.Write($"Inserisci il nuovo sesso del cliente ({clienteDaModificare.Sesso}): ");
-                            string inputSesso = Console.ReadLine().ToUpper();
-
-                            if (string.IsNullOrEmpty(inputSesso)) // se l'input è vuoto mantiene l'info esistente
-                            {
-                                break;
-                            }
-                            else
-                            {
-                                if (true)
-                                {
-                                    Cliente.ValidaSesso(inputSesso);
-                                    nuovoSesso = inputSesso; // Aggiorna il valore di nuovoSesso solo se l'input è valido
-                                    break;
-                                }
-                            }
-                        }
-
-                        //DATA
-                        Console.Write($"Inserisci la nuova data di nascita del cliente ({clienteDaModificare.DataDiNascita:dd/MM/yyyy}): ");
-                        DateTime nuovaDataDiNascita = clienteDaModificare.DataDiNascita;
-
-                        do
-                        {
-                            string nuovaDataInserita = Console.ReadLine();
-                            if (string.IsNullOrEmpty(nuovaDataInserita))
-                            {
-                                break;
-                            }
-
-                            if (DateTime.TryParseExact(nuovaDataInserita, new[] { "ddMMyyyy", "dd/MM/yyyy, dd-MM-yyyy" },
-                                CultureInfo.InvariantCulture, DateTimeStyles.None, out nuovaDataDiNascita))
-                            {
-                                break;
-                            }
-                            Console.WriteLine("Formato data non valido. Riprova.");
-
-                        } while (true);
-
-                        // Creo il nuovo oggetto
-                        Cliente clienteModificato = new Cliente(idCliente, nuovoNome, nuovoCognome, nuovaCitta, nuovoSesso, nuovaDataDiNascita);
-
-                        gestore.ModificaCliente(idCliente, clienteModificato); // Si avvia il metodo
-                        Console.WriteLine("Cliente modificato con successo.");
-                    }
-                    catch (MySqlException ex)
-                    {
-                        Console.WriteLine("Database" + ex.Message);
-                    }
-                    catch (IOException ex)
-                    {
-                        Console.WriteLine($"Errore: {ex.Message}");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-
+                    ModifyClient(gestore);
                     break;
 
                 // ELIMINA CLIENTE //
                 case 4:
-                    Console.WriteLine("Inserisci l'ID del cliente da eliminare");
-                    string outID = Console.ReadLine();
-                    try
-                    {
-                        // Se il Metodo restituisce true, "eliminato" sarà true e quindi non si passerà per il catch
-                        bool eliminato = gestore.EliminaCliente(outID);
-                        Console.WriteLine("Cliente eliminato con successo.");
-                    }
-                    catch (MySqlException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                    //catch (ArgumentException ex)
-                    //{
-                    //    Console.WriteLine(ex.Message);
-                    //}
-                    catch (InvalidOperationException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
+                    DeleteClient(gestore);
                     break;
 
                 default:
@@ -289,6 +108,71 @@ class Program
         return input;
     }
 
+    private static void FindClient(IGestoreC gestore)
+    {
+        try
+        {
+            Console.WriteLine("Scegli l'informazione da cercare:");
+            Console.WriteLine("1. ID");
+            Console.WriteLine("2. Nome");
+            Console.WriteLine("3. Cognome");
+            Console.WriteLine("4. Città");
+            Console.WriteLine("5. Sesso");
+            Console.WriteLine("6. Data di Nascita");
+
+            string scelta;
+            int sceltaInt;
+            do
+            {
+                scelta = Console.ReadLine();
+                int.TryParse(scelta, out sceltaInt);
+                if (sceltaInt < 1 || sceltaInt > 6)
+                {
+                    Console.WriteLine("Inserisci un numero tra 1 e 6:");
+                }
+            } while (sceltaInt < 1 || sceltaInt > 6);
+
+            switch (scelta)
+            {
+                case "1":
+                    scelta = "ID";
+                    break;
+                case "2":
+                    scelta = "Nome";
+                    break;
+                case "3":
+                    scelta = "Cognome";
+                    break;
+                case "4":
+                    scelta = "Citta";
+                    break;
+                case "5":
+                    scelta = "Sesso";
+                    break;
+                case "6":
+                    scelta = "DataDiNascita";
+                    break;
+            }
+
+            Console.WriteLine("Scrivi l'informazione da cercare:");
+            string parametroRicerca = Console.ReadLine();
+
+            List<Cliente> clientiOut = gestore.CercaCliente(parametroRicerca, scelta);
+
+            if (clientiOut.Count > 0)
+            {
+                Console.WriteLine("Clienti trovati:");
+                foreach (Cliente cliente in clientiOut)
+                {
+                    Console.WriteLine(cliente.ToRead());
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Errore generico: {ex.Message}");
+        }
+    }
     private static Cliente InsertClient(IGestoreC gestore)
     {
         bool continuaAdAggiungereClienti = true;
@@ -380,6 +264,163 @@ class Program
         return null;
     }
 
+    private static void ModifyClient(IGestoreC gestore)
+    {
+        Console.Write("Inserisci l'ID del cliente da modificare: ");
+        string idCliente = Console.ReadLine();
+        try
+        {
+            // Tramite Find  estraggo da CercaCliente il cliente con l'ID corrispondente alla ricerca(quindi lo estraggo ma non lo leggo in console come nel case1)
+            // crca nel file tramite il metodo CercaCliente con il paramentro di scelta inpostato su "ID" e usa FirstOrDefault() per estrarre il primo oggetto Cliente trovato nel file o null se la lista è vuota.
+            Cliente clienteDaModificare = gestore.CercaCliente(idCliente, "ID").Find(cliente => cliente.ID == idCliente); //.FirstOrDefault();
+
+            Console.WriteLine("Inserisci le nuove informazioni del cliente o premi Invio per mantenere le informazioni attuali:");
+
+            string nuovoNome = "";
+            string nuovoCognome = "";
+            string nuovaCitta = "";
+            DateTime nuovaDataDiNascita = clienteDaModificare.DataDiNascita;
+
+            while (true)
+            {
+                Console.Write($"Inserisci il nuovo nome del cliente ({clienteDaModificare.Nome}): ");
+                string inputNome = Console.ReadLine();
+
+                try
+                {
+                    if (!string.IsNullOrEmpty(inputNome))
+                    {
+                        Cliente.ValidaInput(inputNome);
+                        nuovoNome = inputNome;
+                    }
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+
+            // Cognome
+            while (true)
+            {
+                Console.Write($"Inserisci il nuovo cognome del cliente ({clienteDaModificare.Cognome}): ");
+                string inputCognome = Console.ReadLine();
+
+                try
+                {
+                    if (!string.IsNullOrEmpty(inputCognome))
+                    {
+                        Cliente.ValidaInput(inputCognome);
+                        nuovoCognome = inputCognome;
+                    }
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+
+            // Città
+            while (true)
+            {
+                Console.Write($"Inserisci la nuova città del cliente ({clienteDaModificare.Citta}): ");
+                string inputCitta = Console.ReadLine();
+
+                try
+                {
+                    if (!string.IsNullOrEmpty(inputCitta))
+                    {
+                        Cliente.ValidaInput(inputCitta);
+                        nuovaCitta = inputCitta;
+                    }
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+
+            string nuovoSesso = clienteDaModificare.Sesso;
+            while (true)
+            {
+                Console.Write($"Inserisci il nuovo sesso del cliente ({clienteDaModificare.Sesso}): ");
+                string inputSesso = Console.ReadLine().ToUpper();
+
+                try
+                {
+                    Cliente.ValidaSesso(inputSesso);
+                    nuovoSesso = inputSesso; // Aggiorna il valore di nuovoSesso solo se l'input è valido
+                    break; // Esce dal ciclo solo se l'input è valido
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message); // Stampa l'errore e continua il ciclo per chiedere nuovamente il sesso
+                }
+            }
+
+            // Data di nascita
+            while (true)
+            {
+                Console.Write($"Inserisci la nuova data di nascita del cliente ({clienteDaModificare.DataDiNascita:dd/MM/yyyy}): ");
+                string inputData = Console.ReadLine();
+
+                try
+                {
+                    if (string.IsNullOrEmpty(inputData))
+                    {
+                        break;
+                    }
+                    nuovaDataDiNascita = Cliente.ValidaData(inputData);
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+
+            // Creo il nuovo oggetto
+            Cliente clienteModificato = new Cliente(idCliente, nuovoNome, nuovoCognome, nuovaCitta, nuovoSesso, nuovaDataDiNascita);
+
+            gestore.ModificaCliente(idCliente, clienteModificato); // Si avvia il metodo
+            Console.WriteLine("Cliente modificato con successo.");
+        }
+        catch (MySqlException ex)
+        {
+            Console.WriteLine("Database" + ex.Message);
+        }
+        catch (IOException ex)
+        {
+            Console.WriteLine($"Errore: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private static void DeleteClient(IGestoreC gestore)
+    {
+        Console.WriteLine("Inserisci l'ID del cliente da eliminare");
+        string outID = Console.ReadLine();
+        try
+        {
+            // Se il Metodo restituisce true, "eliminato" sarà true e quindi non si passerà per il catch
+            bool eliminato = gestore.EliminaCliente(outID);
+            Console.WriteLine("Cliente eliminato con successo.");
+        }
+        catch (MySqlException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        catch (InvalidOperationException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
 }
 
 
