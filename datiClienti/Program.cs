@@ -250,6 +250,14 @@ class Program
                     {
                         Console.WriteLine(ex.Message);
                     }
+                    //catch (ArgumentException ex)
+                    //{
+                    //    Console.WriteLine(ex.Message);
+                    //}
+                    catch (InvalidOperationException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
                     break;
 
                 default:
@@ -257,6 +265,28 @@ class Program
                     break;
             }
         }
+    }
+
+    private static string InputWithValidation(string prompt, Action<string> validationMethod, string errorMessage)
+    {
+        string input;
+
+        while (true)
+        {
+            Console.Write(prompt);
+            input = Console.ReadLine();
+
+            try
+            {
+                validationMethod(input);
+                break;
+            }
+            catch (ArgumentException)
+            {
+                Console.WriteLine(errorMessage);
+            }
+        }
+        return input;
     }
 
     private static Cliente InsertClient(IGestoreC gestore)
@@ -287,53 +317,9 @@ class Program
                     }
                 }
 
-                string nome;
-                while (true)
-                {
-                    Console.Write("Inserisci il nome del cliente: ");
-                    nome = Console.ReadLine();
-                    try
-                    {
-                        Cliente.ValidaInput(nome);
-                        break;
-                    }
-                    catch (ArgumentException e)
-                    {
-                        Console.WriteLine(e.Message);
-                    }
-                }
-
-                string cognome;
-                while (true)
-                {
-                    Console.Write("Inserisci il cognome del cliente: ");
-                    cognome = Console.ReadLine();
-                    try
-                    {
-                        Cliente.ValidaInput(cognome);
-                        break;
-                    }
-                    catch (ArgumentException e)
-                    {
-                        Console.WriteLine(e.Message);
-                    }
-                }
-
-                string citta;
-                while (true)
-                {
-                    Console.Write("Inserisci la città del cliente: ");
-                    citta = Console.ReadLine();
-                    try
-                    {
-                        Cliente.ValidaInput(citta);
-                        break;
-                    }
-                    catch (ArgumentException e)
-                    {
-                        Console.WriteLine(e.Message);
-                    }
-                }
+                string nome = InputWithValidation("Inserisci il nome del cliente: ", Cliente.ValidaInput, "Il nome inserito non è valido.");
+                string cognome = InputWithValidation("Inserisci il cognome del cliente: ", Cliente.ValidaInput, "Il cognome inserito non è valido.");
+                string citta = InputWithValidation("Inserisci la città del cliente: ", Cliente.ValidaInput, "La città inserita non è valida.");
 
                 string sesso = string.Empty;
                 while (true)
