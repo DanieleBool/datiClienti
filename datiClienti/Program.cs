@@ -24,7 +24,6 @@ class Program
 
         if (sceltaArchiviazione == 1)
         {
-            //Carico assembly e tipo da file
             Assembly assemblyGestore = Assembly.LoadFrom(@"C:\Users\d.dieleuterio\source\repos\AssemblyGestore\bin\Debug\net6.0\AssemblyGestore.dll");
             Type gestoreClientiType = assemblyGestore.GetType("AssemblyGestore.GestoreClienti");
             string connectionDB = ConfigurationManager.AppSettings["DatabaseConnection"];
@@ -35,7 +34,6 @@ class Program
         else
         {
             //Carico assembly e tipo da file
-            //Assembly assemblyGestoreFile = Assembly.LoadFrom(@"C:\Users\d.dieleuterio\source\repos\AssemblyGestoreFile\AssemblyGestoreFile\bin\Debug\net6.0\AssemblyGestoreFile.dll");
             Assembly assemblyGestoreFile = Assembly.LoadFrom(@"C:\Users\d.dieleuterio\source\repos\DatiClientiProgram\DatiClientiProgram\AssemblyGestoreFile\AssemblyGestoreFile\bin\Debug\net6.0\AssemblyGestoreFile.dll");
             Type gestoreFileClientiType = assemblyGestoreFile.GetType("AssemblyGestoreFile.GestoreFileClienti");
             string filePercorso = ConfigurationManager.AppSettings["FileConnection"];
@@ -78,6 +76,7 @@ class Program
         }
     }
 
+    //___// (1) CERCA CLIENTE //___//
     private static void FindClient(IGestoreC gestore)
     {
         try
@@ -144,6 +143,7 @@ class Program
         }
     }
 
+    //___// (2) AGGIUNGI CLIENTE //___//
     private static void InsertClient(IGestoreC gestore)
     {
         List<Cliente> clientiInseriti = new List<Cliente>(); // Lista in cui memorizza i clienti inseriti
@@ -172,10 +172,10 @@ class Program
                     }
                 }
 
-                string nome = InputWithValidationAndMessage("Inserisci il nome del cliente: ", Cliente.ValidaInput);
-                string cognome = InputWithValidationAndMessage("Inserisci il cognome del cliente: ", Cliente.ValidaInput);
-                string citta = InputWithValidationAndMessage("Inserisci la città del cliente: ", Cliente.ValidaInput);
-                string sesso = InputWithValidationAndMessage("Inserisci il sesso del cliente (M/F): ", Cliente.ValidaSesso);
+                string nome = InputValidationMessage("Inserisci il nome del cliente: ", Cliente.ValidaInput);
+                string cognome = InputValidationMessage("Inserisci il cognome del cliente: ", Cliente.ValidaInput);
+                string citta = InputValidationMessage("Inserisci la città del cliente: ", Cliente.ValidaInput);
+                string sesso = InputValidationMessage("Inserisci il sesso del cliente (M/F): ", Cliente.ValidaSesso);
                 DateTime dataDiNascita;
                 while (true)
                 {
@@ -228,6 +228,7 @@ class Program
         }
     }
 
+    //___// (3) MODIFICA CLIENTE //___//
     private static void ModifyClient(IGestoreC gestore)
     {
         Console.Write("Inserisci l'ID del cliente da modificare: ");
@@ -235,27 +236,21 @@ class Program
 
         try
         {
-            // Trova il cliente da modificare
+            // Trova il cliente da modificare in base a "idCliente" in input
             Cliente clienteDaModificare = gestore.CercaCliente(idCliente, "ID").FirstOrDefault();
             if (clienteDaModificare == null)
             {
                 throw new Exception($"Il cliente con ID {idCliente} non esiste.");
             }
 
-            Console.WriteLine("Inserisci le nuove informazioni del cliente o premi Invio per mantenere le informazioni attuali:");
-            // Chiedi il nuovo nome
-            string nuovoNome = RequestAndUpdateField("nome", clienteDaModificare.Nome, Cliente.ValidaInput);
-            // Chiedi il nuovo cognome
-            string nuovoCognome = RequestAndUpdateField("cognome", clienteDaModificare.Cognome, Cliente.ValidaInput);
-            // Chiedi la nuova città
-            string nuovaCitta = RequestAndUpdateField("città", clienteDaModificare.Citta, Cliente.ValidaInput);
-            // Chiedi il nuovo sesso
-            string nuovoSesso = RequestAndUpdateField("sesso", clienteDaModificare.Sesso, Cliente.ValidaSesso);
-            // Chiedi la nuova data di nascita
-            DateTime nuovaDataDiNascita = RequestAndUpdateDate("nascita", clienteDaModificare.DataDiNascita);
+            Console.WriteLine("Inserisci le nuove informazioni del cliente o premi Invio per mantenere le informazioni attuali:"); // Richiesta delle nuove informazioni
+            string nuovoNome = UpdateField("nome", clienteDaModificare.Nome, Cliente.ValidaInput);
+            string nuovoCognome = UpdateField("cognome", clienteDaModificare.Cognome, Cliente.ValidaInput);
+            string nuovaCitta = UpdateField("città", clienteDaModificare.Citta, Cliente.ValidaInput);
+            string nuovoSesso = UpdateField("sesso", clienteDaModificare.Sesso, Cliente.ValidaSesso);
+            DateTime nuovaDataDiNascita = UpdateDate("nascita", clienteDaModificare.DataDiNascita);
 
-            // Crea il nuovo oggetto Cliente
-            Cliente clienteModificato = new Cliente(idCliente, nuovoNome, nuovoCognome, nuovaCitta, nuovoSesso, nuovaDataDiNascita);
+            Cliente clienteModificato = new Cliente(idCliente, nuovoNome, nuovoCognome, nuovaCitta, nuovoSesso, nuovaDataDiNascita); // Crea il nuovo oggetto Cliente
 
             // Modifica il cliente
             gestore.ModificaCliente(idCliente, clienteModificato);
@@ -267,6 +262,7 @@ class Program
         }
     }
 
+    //___// (4) ELIMINA CLIENTE //___//
     private static void DeleteClient(IGestoreC gestore)
     {
         Console.WriteLine("Inserisci l'ID del cliente da eliminare");
@@ -287,7 +283,9 @@ class Program
         }
     }
 
-    private static string RequestAndUpdateField(string fieldName, string currentValue, Func<string, bool> validationFunc)
+    //___// FUNZIONI //___//
+    //___ Funzione per input in ModifyClient ___//
+    private static string UpdateField(string fieldName, string currentValue, Func<string, bool> validationFunc)
     {
         Console.WriteLine($"Il {fieldName} attuale è: {currentValue}");
         string prompt = $"Inserisci il nuovo {fieldName} (premi invio per mantenere il valore attuale): ";
@@ -325,8 +323,8 @@ class Program
             }
         }
     }
-
-    private static DateTime RequestAndUpdateDate(string fieldName, DateTime currentValue)
+    //___ Funzione per input data in ModifyClient ___//
+    private static DateTime UpdateDate(string fieldName, DateTime currentValue)
     {
         Console.WriteLine($"La data di {fieldName} attuale è: {currentValue:dd/MM/yyyy}");
         string prompt = $"Inserisci la nuova data di {fieldName} (premi invio per mantenere il valore attuale): ";
@@ -357,7 +355,8 @@ class Program
         }
     }
 
-    private static string InputWithValidationAndMessage(string prompt, Func<string, bool> validationFunc)
+    //___ Funzione generale per validazione input e gestione eccezioni ___//
+    private static string InputValidationMessage(string prompt, Func<string, bool> validationFunc)
     {
         string input;
 
