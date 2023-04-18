@@ -213,7 +213,6 @@ class Program
                 Console.WriteLine("Errore database: " + ex.Message);
             }
         }
-
         // Salvataggio di tutti i clienti inseriti
         try
         {
