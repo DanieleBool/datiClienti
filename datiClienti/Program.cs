@@ -146,13 +146,13 @@ class Program
 
     private static void InsertClient(IGestoreC gestore)
     {
-        List<Cliente> clientiInseriti = new List<Cliente>();
-        while (true)
+        List<Cliente> clientiInseriti = new List<Cliente>(); // Lista in cui memorizzo i clienti inseriti
+        while (true) // Ciclo per continuare ad aggiungere clienti alla lista finché non premo "N" e passo al salvataggio
         {
             try
             {
                 string id;
-                while (true)
+                while (true) // Ciclo per controllare che l'id sia valido
                 {
                     Console.Write("Inserisci l'ID del cliente: ");
                     id = Console.ReadLine();
@@ -192,14 +192,14 @@ class Program
                     }
                 }
 
-                Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, dataDiNascita);
-                gestore.AggiungiCliente(nuovoCliente);
-                clientiInseriti.Add(nuovoCliente);
+                Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, dataDiNascita); // Crea un nuovo oggetto Cliente con i dati inseriti e validati
+                //gestore.AggiungiCliente(nuovoCliente);
+                clientiInseriti.Add(nuovoCliente); // Aggiunge il nuovo cliente alla lista dei clienti inseriti
 
                 Console.WriteLine("Cliente aggiunto con successo.");
                 Console.Write("Premi \"Invio\" per aggiungere un altro cliente o \"N\" per salvare i clienti inseriti ");
                 string continua = Console.ReadLine().ToUpper();
-                if (continua == "N")
+                if (continua == "N") // Esce dal ciclo se l'utente inserisce "N", altrimenti continua a chiedere di aggiungere
                 {
                     break;
                 }
