@@ -146,8 +146,8 @@ class Program
 
     private static void InsertClient(IGestoreC gestore)
     {
-        List<Cliente> clientiInseriti = new List<Cliente>(); // Lista in cui memorizzo i clienti inseriti
-        while (true) // Ciclo per continuare ad aggiungere clienti alla lista finché non premo "N" e passo al salvataggio
+        List<Cliente> clientiInseriti = new List<Cliente>(); // Lista in cui memorizza i clienti inseriti
+        while (true) // Ciclo per continuare ad aggiungere clienti alla lista finché non viene inserito "N" e si passa al salvataggio
         {
             try
             {
@@ -228,8 +228,6 @@ class Program
             Console.WriteLine("Errore durante il salvataggio dei clienti: " + ex.Message);
         }
     }
-
-
 
     private static void ModifyClient(IGestoreC gestore)
     {
