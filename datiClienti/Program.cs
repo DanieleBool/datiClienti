@@ -7,8 +7,6 @@ using System.Text;
 using System.Configuration;
 using MySql.Data.MySqlClient;
 using System.Reflection;
-using MySqlX.XDevAPI;
-using System.Diagnostics;
 
 class Program
 {
@@ -61,52 +59,24 @@ class Program
                 case 1:
                     FindClient(gestore);
                     break;
-
                 // AGGIUNGI CLIENTE //
                 case 2:
-                    Cliente nuovoCliente = InsertClient(gestore); // Creo un istanza per utilizzare il metodo, se il metodo fosse stato statico non ne avrei avuto bisogno
-                    gestore.AggiungiCliente(nuovoCliente);
-                    Console.WriteLine("Cliente aggiunto con successo.");
+                    InsertClient(gestore);
                     break;
-
                 // MODIFICA CLIENTE //
                 case 3:
                     ModifyClient(gestore);
                     break;
-
                 // ELIMINA CLIENTE //
                 case 4:
                     DeleteClient(gestore);
                     break;
-
                 default:
                     Console.WriteLine("Opzione non valida. Riprova.");
                     break;
             }
         }
     }
-
-    //private static string InputWithValidation(string prompt, Action<string> validationMethod, string errorMessage)
-    //{
-    //    string input;
-
-    //    while (true)
-    //    {
-    //        Console.Write(prompt);
-    //        input = Console.ReadLine();
-
-    //        try
-    //        {
-    //            validationMethod(input);
-    //            break;
-    //        }
-    //        catch (ArgumentException)
-    //        {
-    //            Console.WriteLine(errorMessage);
-    //        }
-    //    }
-    //    return input;
-    //}
 
     private static void FindClient(IGestoreC gestore)
     {
@@ -173,99 +143,10 @@ class Program
             Console.WriteLine($"Errore generico: {ex.Message}");
         }
     }
-    //private static Cliente InsertClient(IGestoreC gestore)
-    //{
-    //    bool continuaAdAggiungereClienti = true;
-    //    while (continuaAdAggiungereClienti)
-    //    {
-    //        try
-    //        {
-    //            string id;
-    //            while (true)
-    //            {
-    //                Console.Write("Inserisci l'ID del cliente: ");
-    //                id = Console.ReadLine();
-    //                try
-    //                {
-    //                    gestore.VerificaIdUnivoco(id);
-    //                    Cliente.ValidaId(id);
-    //                    break;
-    //                }
-    //                catch (ArgumentException e)
-    //                {
-    //                    Console.WriteLine(e.Message);
-    //                }
-    //                catch (InvalidOperationException e)
-    //                {
-    //                    Console.WriteLine(e.Message);
-    //                }
-    //            }
 
-    //            string nome = InputWithValidation("Inserisci il nome del cliente: ", Cliente.ValidaInput, "Il nome inserito non è valido.");
-    //            string cognome = InputWithValidation("Inserisci il cognome del cliente: ", Cliente.ValidaInput, "Il cognome inserito non è valido.");
-    //            string citta = InputWithValidation("Inserisci la città del cliente: ", Cliente.ValidaInput, "La città inserita non è valida.");
-
-    //            string sesso = string.Empty;
-    //            while (true)
-    //            {
-    //                Console.Write("Inserisci il sesso del cliente (M/F): ");
-    //                string sessoInput = Console.ReadLine().ToUpper();
-    //                try
-    //                {
-    //                    Cliente.ValidaSesso(sessoInput);
-    //                    sesso = sessoInput;
-    //                    break;
-    //                }
-    //                catch (ArgumentException e)
-    //                {
-    //                    Console.WriteLine(e.Message);
-    //                }
-    //            }
-
-    //            DateTime dataDiNascita;
-    //            while (true)
-    //            {
-    //                Console.Write("Inserisci la data di nascita del cliente (formato: dd/MM/yyyy): ");
-    //                string dataInput = Console.ReadLine();
-    //                try
-    //                {
-    //                    dataDiNascita = Cliente.ValidaData(dataInput);
-    //                    break;
-    //                }
-    //                catch (ArgumentException e)
-    //                {
-    //                    Console.WriteLine(e.Message);
-    //                }
-    //            }
-
-    //            Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, dataDiNascita);
-
-    //            Console.WriteLine("Cliente aggiunto con successo.");
-    //            Console.WriteLine("Premi \"Invio\" per aggiungere un altro cliente o \"N\" per uscire ");
-    //            string continua = Console.ReadLine().ToUpper();
-    //            if (continua == "N")
-    //            {
-    //                continuaAdAggiungereClienti = false;
-    //            }
-
-    //            return nuovoCliente;
-    //        }
-    //        catch (IOException ex)
-    //        {
-    //            Console.WriteLine($"Errore file: {ex.Message}");
-    //            throw;
-    //        }
-    //        catch (Exception ex)
-    //        {
-    //            Console.WriteLine("Errore database: " + ex.Message);
-    //            throw;
-    //        }
-    //    }
-    //    return null;
-    //}
-
-    private static Cliente InsertClient(IGestoreC gestore)
+    private static void InsertClient(IGestoreC gestore)
     {
+        List<Cliente> clientiInseriti = new List<Cliente>();
         while (true)
         {
             try
@@ -294,9 +175,7 @@ class Program
                 string nome = InputWithValidationAndMessage("Inserisci il nome del cliente: ", Cliente.ValidaInput);
                 string cognome = InputWithValidationAndMessage("Inserisci il cognome del cliente: ", Cliente.ValidaInput);
                 string citta = InputWithValidationAndMessage("Inserisci la città del cliente: ", Cliente.ValidaInput);
-
                 string sesso = InputWithValidationAndMessage("Inserisci il sesso del cliente (M/F): ", Cliente.ValidaSesso);
-
                 DateTime dataDiNascita;
                 while (true)
                 {
@@ -314,15 +193,16 @@ class Program
                 }
 
                 Cliente nuovoCliente = new Cliente(id, nome, cognome, citta, sesso, dataDiNascita);
+                gestore.AggiungiCliente(nuovoCliente);
+                clientiInseriti.Add(nuovoCliente);
 
                 Console.WriteLine("Cliente aggiunto con successo.");
-                Console.Write("Premi \"Invio\" per aggiungere un altro cliente o \"N\" per uscire ");
+                Console.Write("Premi \"Invio\" per aggiungere un altro cliente o \"N\" per salvare i clienti inseriti ");
                 string continua = Console.ReadLine().ToUpper();
                 if (continua == "N")
                 {
                     break;
                 }
-
             }
             catch (IOException ex)
             {
@@ -334,148 +214,22 @@ class Program
             }
         }
 
-        return null;
+        // Salvataggio di tutti i clienti inseriti
+        try
+        {
+            foreach (var cliente in clientiInseriti)
+            {
+                gestore.AggiungiCliente(cliente);
+            }
+            Console.WriteLine("Salvataggio completato.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Errore durante il salvataggio dei clienti: " + ex.Message);
+        }
     }
 
 
-
-    //private static void ModifyClient(IGestoreC gestore)
-    //{
-    //    Console.Write("Inserisci l'ID del cliente da modificare: ");
-    //    string idCliente = Console.ReadLine();
-    //    try
-    //    {
-    //        // Tramite Find  estraggo da CercaCliente il cliente con l'ID corrispondente alla ricerca(quindi lo estraggo ma non lo leggo in console come nel case1)
-    //        // crca nel file tramite il metodo CercaCliente con il paramentro di scelta inpostato su "ID" e usa FirstOrDefault() per estrarre il primo oggetto Cliente trovato nel file o null se la lista è vuota.
-    //        Cliente clienteDaModificare = gestore.CercaCliente(idCliente, "ID").Find(cliente => cliente.ID == idCliente); //.FirstOrDefault();
-
-    //        Console.WriteLine("Inserisci le nuove informazioni del cliente o premi Invio per mantenere le informazioni attuali:");
-
-    //        string nuovoNome = "";
-    //        string nuovoCognome = "";
-    //        string nuovaCitta = "";
-    //        DateTime nuovaDataDiNascita = clienteDaModificare.DataDiNascita;
-
-    //        while (true)
-    //        {
-    //            Console.Write($"Inserisci il nuovo nome del cliente ({clienteDaModificare.Nome}): ");
-    //            string inputNome = Console.ReadLine();
-
-    //            try
-    //            {
-    //                if (!string.IsNullOrEmpty(inputNome))
-    //                {
-    //                    Cliente.ValidaInput(inputNome);
-    //                    nuovoNome = inputNome;
-    //                }
-    //                break;
-    //            }
-    //            catch (Exception ex)
-    //            {
-    //                Console.WriteLine(ex.Message);
-    //            }
-    //        }
-
-    //        // Cognome
-    //        while (true)
-    //        {
-    //            Console.Write($"Inserisci il nuovo cognome del cliente ({clienteDaModificare.Cognome}): ");
-    //            string inputCognome = Console.ReadLine();
-
-    //            try
-    //            {
-    //                if (!string.IsNullOrEmpty(inputCognome))
-    //                {
-    //                    Cliente.ValidaInput(inputCognome);
-    //                    nuovoCognome = inputCognome;
-    //                }
-    //                break;
-    //            }
-    //            catch (Exception ex)
-    //            {
-    //                Console.WriteLine(ex.Message);
-    //            }
-    //        }
-
-    //        // Città
-    //        while (true)
-    //        {
-    //            Console.Write($"Inserisci la nuova città del cliente ({clienteDaModificare.Citta}): ");
-    //            string inputCitta = Console.ReadLine();
-
-    //            try
-    //            {
-    //                if (!string.IsNullOrEmpty(inputCitta))
-    //                {
-    //                    Cliente.ValidaInput(inputCitta);
-    //                    nuovaCitta = inputCitta;
-    //                }
-    //                break;
-    //            }
-    //            catch (Exception ex)
-    //            {
-    //                Console.WriteLine(ex.Message);
-    //            }
-    //        }
-
-    //        string nuovoSesso = clienteDaModificare.Sesso;
-    //        while (true)
-    //        {
-    //            Console.Write($"Inserisci il nuovo sesso del cliente ({clienteDaModificare.Sesso}): ");
-    //            string inputSesso = Console.ReadLine().ToUpper();
-
-    //            try
-    //            {
-    //                Cliente.ValidaSesso(inputSesso);
-    //                nuovoSesso = inputSesso; // Aggiorna il valore di nuovoSesso solo se l'input è valido
-    //                break; // Esce dal ciclo solo se l'input è valido
-    //            }
-    //            catch (Exception ex)
-    //            {
-    //                Console.WriteLine(ex.Message); // Stampa l'errore e continua il ciclo per chiedere nuovamente il sesso
-    //            }
-    //        }
-
-    //        // Data di nascita
-    //        while (true)
-    //        {
-    //            Console.Write($"Inserisci la nuova data di nascita del cliente ({clienteDaModificare.DataDiNascita:dd/MM/yyyy}): ");
-    //            string inputData = Console.ReadLine();
-
-    //            try
-    //            {
-    //                if (string.IsNullOrEmpty(inputData))
-    //                {
-    //                    break;
-    //                }
-    //                nuovaDataDiNascita = Cliente.ValidaData(inputData);
-    //                break;
-    //            }
-    //            catch (Exception ex)
-    //            {
-    //                Console.WriteLine(ex.Message);
-    //            }
-    //        }
-
-    //        // Creo il nuovo oggetto
-    //        Cliente clienteModificato = new Cliente(idCliente, nuovoNome, nuovoCognome, nuovaCitta, nuovoSesso, nuovaDataDiNascita);
-
-    //        gestore.ModificaCliente(idCliente, clienteModificato); // Si avvia il metodo
-    //        Console.WriteLine("Cliente modificato con successo.");
-    //    }
-    //    catch (MySqlException ex)
-    //    {
-    //        Console.WriteLine("Database" + ex.Message);
-    //    }
-    //    catch (IOException ex)
-    //    {
-    //        Console.WriteLine($"Errore: {ex.Message}");
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        Console.WriteLine(ex.Message);
-    //    }
-    //}
 
     private static void ModifyClient(IGestoreC gestore)
     {
@@ -492,7 +246,6 @@ class Program
             }
 
             Console.WriteLine("Inserisci le nuove informazioni del cliente o premi Invio per mantenere le informazioni attuali:");
-
             // Chiedi il nuovo nome
             string nuovoNome = RequestAndUpdateField("nome", clienteDaModificare.Nome, Cliente.ValidaInput);
             // Chiedi il nuovo cognome
@@ -517,7 +270,6 @@ class Program
         }
     }
 
-
     private static void DeleteClient(IGestoreC gestore)
     {
         Console.WriteLine("Inserisci l'ID del cliente da eliminare");
@@ -538,41 +290,6 @@ class Program
         }
     }
 
-    //private static string RequestAndUpdateField(string fieldName, string currentValue, Func<string, bool> validationFunc)
-    //{
-    //    Console.WriteLine($"Il {fieldName} attuale è: {currentValue}");
-    //    string prompt = $"Inserisci il nuovo {fieldName} (premi invio per mantenere il valore attuale): ";
-
-    //    string input = Console.ReadLine().Trim(); // Rimuovo gli spazi iniziali e finali dall'input
-    //    string updatedValue;
-
-    //    try
-    //    {
-    //        // Se l'utente ha premuto invio, mantengo il valore attuale
-    //        if (string.IsNullOrEmpty(input))
-    //        {
-    //            updatedValue = currentValue;
-    //        }
-    //        else
-    //        {
-    //            while (!validationFunc(input))
-    //            {
-    //                Console.WriteLine($"Il {fieldName} inserito non è valido.");
-    //                Console.Write(prompt);
-    //                input = Console.ReadLine().Trim();
-    //            }
-    //            updatedValue = input;
-    //        }
-
-    //        return updatedValue;
-    //    }
-    //    catch (ArgumentException ex)
-    //    {
-    //        Console.WriteLine($"Errore: {ex.Message}");
-    //        Console.WriteLine($"Il {fieldName} rimarrà invariato.");
-    //        return currentValue;
-    //    }
-    //}
     private static string RequestAndUpdateField(string fieldName, string currentValue, Func<string, bool> validationFunc)
     {
         Console.WriteLine($"Il {fieldName} attuale è: {currentValue}");
@@ -643,7 +360,6 @@ class Program
         }
     }
 
-
     private static string InputWithValidationAndMessage(string prompt, Func<string, bool> validationFunc)
     {
         string input;
@@ -669,7 +385,6 @@ class Program
                 Console.WriteLine(ex.Message);
             }
         }
-
         return input;
     }
 }
